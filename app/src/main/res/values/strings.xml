@@ -2,4 +2,8 @@
     <string name="app_name" translatable="false">Movie Stalker</string>
 
 
+    <!--Error Text-->
+    <string name="network_error">O no!A network error has occured!
+        Please check you internet connection and try again.</string>
+
 </resources>

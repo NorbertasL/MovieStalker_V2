@@ -8,7 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.List;
+
 import moviestalkercom.red_spark.redsparkdev.moviestalker.R;
+import moviestalkercom.red_spark.redsparkdev.moviestalker.data.Constants;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -69,5 +72,11 @@ public class TopMoviesFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+    public void setView(String viewType, Boolean visible){
+        // TODO: 08-Aug-17
+    }
+    public void setPosters(List<String> posters){
+        // TODO: 08-Aug-17  
     }
 }

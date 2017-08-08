@@ -21,7 +21,7 @@ public class MovieData {
         String vote_average;
         String title;
         String popularity;
-        String poster_path;
+        private String poster_path;
         String original_language;
         String original_title;
         List<String> genre_ids = new ArrayList<>();
@@ -29,6 +29,10 @@ public class MovieData {
         String adult;
         String overview;
         String release_date;
+
+        public String getPosterPath(){
+            return poster_path;
+        }
     }
 
 }
