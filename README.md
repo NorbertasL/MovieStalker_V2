@@ -11,3 +11,5 @@ ButterKnife - Reducing boilerplate Android code. http://jakewharton.github.io/bu
 Retrofit - Text request from web. http://square.github.io/retrofit/  <br>
 GSON - For formatting Json text into java objects.Using a built in version from Retrofit.<br>
 GSON - Stand alone version link https://github.com/google/gson
+
+
