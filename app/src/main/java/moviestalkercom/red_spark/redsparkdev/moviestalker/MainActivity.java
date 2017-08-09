@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements TopMoviesFragment
                         thumbnails.add(result.getPosterPath());
                     }
                     //we send the string to the fragment
-                    fragment.setPosters(thumbnails);
+                    fragment.setThumbnails(thumbnails);
 
                 }
             });
