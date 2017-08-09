@@ -12,4 +12,8 @@ public class Constants {
         public static final String PROGRESS_BAR = "PROGRESS_BAR_VIEW";
         public static final String MAIN_DISPLAY = "MAIN_DISPLAY_VIEW";
     }
+
+    public static class BUNDLE_KEY{
+        public static final String THUMBNAIL = "THUMBNAIL_KEY";
+    }
 }

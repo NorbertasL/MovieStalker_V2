@@ -27,14 +27,11 @@ import moviestalkercom.red_spark.redsparkdev.moviestalker.fragments.adapters.Top
  * {@link TopMoviesFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
  */
-public class TopMoviesFragment extends Fragment {
+public class TopMoviesFragment extends Fragment{
+
 
     //Used by butterknife to set views to null
     private Unbinder unbinder;
-    @BindView(R.id.errorText)
-    TextView mErrorView;
-    @BindView(R.id.progressBar)
-    ProgressBar mProgressBar;
     @BindView(R.id.rv_movieGrid)
     RecyclerView mRecyclerView;
 
@@ -58,11 +55,16 @@ public class TopMoviesFragment extends Fragment {
         //butterknife set up
         unbinder = ButterKnife.bind(this, rootView);
 
+        if(getArguments() != null){
+            thumbnails = getArguments().getStringArrayList(Constants.BUNDLE_KEY.THUMBNAIL);
+        }else {
+            // TODO: 09-Aug-17 Error handeling
+            mListener.onError();
+        }
+
         mLayoutManager = new GridLayoutManager(getActivity(), spanCount);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new TopMoviesFragmentAdapter();
-
-
 
         return rootView;
     }
@@ -73,12 +75,6 @@ public class TopMoviesFragment extends Fragment {
         unbinder.unbind();
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
 
     @Override
     public void onAttach(Context context) {
@@ -97,58 +93,10 @@ public class TopMoviesFragment extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onThumbnailClick(Uri uri);
+        void onError();
     }
-    public void setView(String viewType, Boolean visible){
-        switch (viewType){
-            case Constants.VIEW_TYPE.ERROR:
-                if(visible){
-                    mErrorView.setVisibility(View.VISIBLE);
-                    //just making sure the other views are gone
-                    mProgressBar.setVisibility(View.GONE);
-                    mRecyclerView.setVisibility(View.GONE);
-                }else{
-                    mErrorView.setVisibility(View.GONE);
-                }
-                break;
-            case Constants.VIEW_TYPE.PROGRESS_BAR:
-                if(visible){
-                    mProgressBar.setVisibility(View.VISIBLE);
-                    //Making sure other views are not visable
-                    mErrorView.setVisibility(View.GONE);
-                    mRecyclerView.setVisibility(View.GONE);
-                }else{
-                    mProgressBar.setVisibility(View.GONE);
-                }
-                break;
-            case Constants.VIEW_TYPE.MAIN_DISPLAY:
-                if(visible){
-                    mRecyclerView.setVisibility(View.VISIBLE);
-                    mErrorView.setVisibility(View.GONE);
-                    mProgressBar.setVisibility(View.GONE);
-                }else{
-                    mRecyclerView.setVisibility(View.GONE);
-                }
-                break;
-        }
 
-    }
-    public void setThumbnails(List<String> posters){
-        if(posters != null || !posters.isEmpty())
-            thumbnails = posters;
-        else
-            setView(Constants.VIEW_TYPE.ERROR, true);
-    }
 }

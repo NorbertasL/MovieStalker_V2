@@ -6,6 +6,20 @@
     android:layout_height="match_parent"
     tools:context="moviestalkercom.red_spark.redsparkdev.moviestalker.MainActivity">
 
+    <TextView
+        android:id="@+id/errorText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/network_error"
+        android:visibility="gone"
+        />
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="@dimen/progress_bar_width"
+        android:layout_height="@dimen/progress_bar_height"
+        android:layout_gravity="center"/>
+
+
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_height="match_parent"
