@@ -7,10 +7,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import java.util.ArrayList;
-
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import moviestalkercom.red_spark.redsparkdev.moviestalker.data.Constants;
 import moviestalkercom.red_spark.redsparkdev.moviestalker.data.MovieData;
 import moviestalkercom.red_spark.redsparkdev.moviestalker.fragments.TopMoviesFragment;
@@ -29,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements TopMoviesFragment
     private MovieData mMovieData;
 
     @BindView(R.id.errorText)TextView mErrorView;
+
     @BindView(R.id.progressBar)ProgressBar mProgressBar;
 
     TopMoviesFragment topMoviesFragment;
@@ -37,12 +37,13 @@ public class MainActivity extends AppCompatActivity implements TopMoviesFragment
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
         mFragmentManager = getSupportFragmentManager();
         //checking for save instance state
         if(savedInstanceState == null) {
 
-            mProgressBar.setVisibility(View.VISIBLE);
+           // mProgressBar.setVisibility(View.VISIBLE);
 
             //Creating retrofit builder instance
             final Retrofit.Builder builder =  new Retrofit.Builder()
@@ -59,42 +60,51 @@ public class MainActivity extends AppCompatActivity implements TopMoviesFragment
 
             //Calling the action on the interface(we only have one and it's a @GET request)
             //We also specify the variables of the url
-            Call<ArrayList<MovieData>> networkCall = networkInterface
-                    .movieList(this.getResources().getString(R.string.api_key));
+            String url = Constants.MOVIE_BASE_URL
+                    + "/3/movie/top_rated?api_key="
+                    + getString(R.string.api_key);
+            Call<MovieData> networkCall = networkInterface
+                    .movieList(url);
 
-            final TopMoviesFragment fragment =  (TopMoviesFragment)mFragmentManager
-                    .findFragmentByTag(FRAGMENT_TAG);
-            //displaying progress bar
+            mProgressBar.setVisibility(View.VISIBLE);
             //executing the request asynchronously
-            networkCall.enqueue(new Callback<ArrayList<MovieData>>() {
+            networkCall.enqueue(new Callback<MovieData>() {
 
                 @Override
-                public void onResponse(Call<ArrayList<MovieData>> call, Response<ArrayList<MovieData>> response) {
+                public void onResponse(Call<MovieData> call, Response<MovieData> response) {
 
                     //Removing the progress bar since we have loaded the data
                     mProgressBar.setVisibility(View.GONE);
 
                     //get(0) since there should only be one list item in the response
-                    mMovieData = response.body().get(0);
-                    ArrayList<String> thumbnails = extractThumbnails(mMovieData);
-                    //adding the fragment
-                    Bundle bundle = new Bundle();
-                    bundle.putStringArrayList(Constants.BUNDLE_KEY.THUMBNAIL, thumbnails);
+                    if(response.body() != null){
+                        mMovieData = response.body();
+                        ArrayList<String> thumbnails = extractThumbnails(mMovieData);
+                        //adding the fragment
+                        Bundle bundle = new Bundle();
+                        bundle.putStringArrayList(Constants.BUNDLE_KEY.THUMBNAIL, thumbnails);
 
-                    topMoviesFragment = new TopMoviesFragment();
-                    topMoviesFragment.getArguments();
+                        topMoviesFragment = new TopMoviesFragment();
+                        topMoviesFragment.setArguments(bundle);
 
-                    mFragmentManager.beginTransaction()
-                            .add(R.id.fragment_container
-                                    , topMoviesFragment
-                                    , FRAGMENT_TAG)
-                            .commit();
+                        mFragmentManager.beginTransaction()
+                                .add(R.id.fragment_container
+                                        , topMoviesFragment
+                                        , FRAGMENT_TAG)
+                                .commit();
+                        mErrorView.setVisibility(View.GONE);
+                    }else{
+                        mErrorView.setVisibility(View.VISIBLE);
+                    }
+
+
 
                 }
 
                 @Override
-                public void onFailure(Call<ArrayList<MovieData>> call, Throwable t) {
+                public void onFailure(Call<MovieData> call, Throwable t) {
                     mErrorView.setVisibility(View.VISIBLE);
+                    mProgressBar.setVisibility(View.GONE);
                 }
 
                 private ArrayList<String> extractThumbnails(MovieData data){
@@ -120,6 +130,7 @@ public class MainActivity extends AppCompatActivity implements TopMoviesFragment
     public void onError() {
         mFragmentManager.beginTransaction().remove(topMoviesFragment).commit();
         mErrorView.setVisibility(View.VISIBLE);
+        mProgressBar.setVisibility(View.GONE);
 
     }
 }

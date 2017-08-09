@@ -9,11 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-
 import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -58,13 +54,13 @@ public class TopMoviesFragment extends Fragment{
         if(getArguments() != null){
             thumbnails = getArguments().getStringArrayList(Constants.BUNDLE_KEY.THUMBNAIL);
         }else {
-            // TODO: 09-Aug-17 Error handeling
             mListener.onError();
         }
 
         mLayoutManager = new GridLayoutManager(getActivity(), spanCount);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new TopMoviesFragmentAdapter();
+        mAdapter = new TopMoviesFragmentAdapter(getActivity(), thumbnails);
+        mRecyclerView.setAdapter(mAdapter);
 
         return rootView;
     }
@@ -94,7 +90,6 @@ public class TopMoviesFragment extends Fragment{
     }
 
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onThumbnailClick(Uri uri);
         void onError();
     }
