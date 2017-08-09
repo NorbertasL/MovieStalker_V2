@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +24,7 @@ import moviestalkercom.red_spark.redsparkdev.moviestalker.fragments.adapters.Top
  * {@link TopMoviesFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
  */
-public class TopMoviesFragment extends Fragment{
+public class TopMoviesFragment extends Fragment implements TopMoviesFragmentAdapter.OnClickListener{
 
 
     //Used by butterknife to set views to null
@@ -59,7 +60,7 @@ public class TopMoviesFragment extends Fragment{
 
         mLayoutManager = new GridLayoutManager(getActivity(), spanCount);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new TopMoviesFragmentAdapter(getActivity(), thumbnails);
+        mAdapter = new TopMoviesFragmentAdapter(getContext(), thumbnails, this);
         mRecyclerView.setAdapter(mAdapter);
 
         return rootView;
@@ -89,7 +90,14 @@ public class TopMoviesFragment extends Fragment{
         mListener = null;
     }
 
+    @Override
+    public void onItemClick(View view, int position) {
+        // TODO: 09-Aug-17 handle the on click
+
+    }
+
     public interface OnFragmentInteractionListener {
+
         void onThumbnailClick(Uri uri);
         void onError();
     }

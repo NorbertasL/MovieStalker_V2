@@ -9,8 +9,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import java.util.Collections;
 import java.util.List;
-
-import butterknife.BindView;
 import moviestalkercom.red_spark.redsparkdev.moviestalker.R;
 
 /**
@@ -20,11 +18,21 @@ import moviestalkercom.red_spark.redsparkdev.moviestalker.R;
 public class TopMoviesFragmentAdapter extends RecyclerView.Adapter<TopMoviesFragmentAdapter.MyViewHolder>{
     private LayoutInflater inflater;
     private List<String> mThumbnails = Collections.emptyList();
+    private OnClickListener mOnClickListener;
 
-    public TopMoviesFragmentAdapter(Context context, List<String> thumbnails){
+    public TopMoviesFragmentAdapter(Context context, List<String> thumbnails, OnClickListener onClickListener){
         inflater = LayoutInflater.from(context);
         mThumbnails = thumbnails;
+
+        if (onClickListener instanceof OnClickListener) {
+            mOnClickListener = onClickListener;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnClickListener");
+        }
+
     }
+    public interface OnClickListener{void onItemClick(View view, int position);}
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -44,14 +52,21 @@ public class TopMoviesFragmentAdapter extends RecyclerView.Adapter<TopMoviesFrag
         return mThumbnails.size();
     }
 
-    class MyViewHolder extends RecyclerView.ViewHolder{
+    class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView textView;
 
 
         public MyViewHolder(View itemView) {
             super(itemView);
             textView = (TextView) itemView.findViewById(R.id.tv_Test);
+            itemView.setOnClickListener(this);
 
+
+        }
+
+        @Override
+        public void onClick(View v) {
+            mOnClickListener.onItemClick(v, getAdapterPosition());
         }
     }
 
