@@ -18,13 +18,13 @@ import com.bumptech.glide.Glide;
  * Created by Red_Spark on 08-Aug-17.
  */
 
-public class TopMoviesFragmentAdapter extends RecyclerView.Adapter<TopMoviesFragmentAdapter.MyViewHolder>{
+public class ThumbnailFragmentAdapter extends RecyclerView.Adapter<ThumbnailFragmentAdapter.MyViewHolder>{
     private LayoutInflater inflater;
     private List<String> mThumbnails = Collections.emptyList();
     private OnClickListener mOnClickListener;
 
 
-    public TopMoviesFragmentAdapter(Context context, List<String> thumbnails, OnClickListener onClickListener){
+    public ThumbnailFragmentAdapter(Context context, List<String> thumbnails, OnClickListener onClickListener){
         inflater = LayoutInflater.from(context);
         mThumbnails = thumbnails;
 

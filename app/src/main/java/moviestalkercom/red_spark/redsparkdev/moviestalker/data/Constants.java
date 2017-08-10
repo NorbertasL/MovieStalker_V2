@@ -10,6 +10,8 @@ public class Constants {
 
     public static class BUNDLE_KEY{
         public static final String THUMBNAIL = "THUMBNAIL_KEY";
+        public static final String LAYOUT = "LAYOUT_KEY";
+        public static final String POSITION = "POSITION_KEY";
     }
     public static class POSTER_SIZE{
         public static final String W95 = "w92";

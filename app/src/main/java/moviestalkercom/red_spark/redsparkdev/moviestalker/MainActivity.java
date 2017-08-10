@@ -52,12 +52,10 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        mFragmentManager = getSupportFragmentManager();
 
-        mAdapter = new MainFragmentPagerAdapter(getSupportFragmentManager());
 
-        mPager = (ViewPager)findViewById(R.id.pager);
-        mPager.setAdapter(mAdapter);
+
+
 
 
 
@@ -78,10 +76,12 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
             }
         });
          */
-
-
-
         mFragmentManager = getSupportFragmentManager();
+
+        mAdapter = new MainFragmentPagerAdapter(getSupportFragmentManager());
+        mPager = (ViewPager)findViewById(R.id.pager);
+        mPager.setAdapter(mAdapter);
+
         //checking for save instance state
         if(savedInstanceState == null) {
 

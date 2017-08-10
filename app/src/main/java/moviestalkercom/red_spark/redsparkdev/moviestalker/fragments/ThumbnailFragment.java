@@ -3,6 +3,7 @@ package moviestalkercom.red_spark.redsparkdev.moviestalker.fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,12 +12,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import moviestalkercom.red_spark.redsparkdev.moviestalker.R;
-import moviestalkercom.red_spark.redsparkdev.moviestalker.fragments.adapters.TopMoviesFragmentAdapter;
+import moviestalkercom.red_spark.redsparkdev.moviestalker.data.Constants;
+import moviestalkercom.red_spark.redsparkdev.moviestalker.fragments.adapters.ThumbnailFragmentAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -24,7 +27,8 @@ import moviestalkercom.red_spark.redsparkdev.moviestalker.fragments.adapters.Top
  * {@link ThumbnailFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
  */
-public class ThumbnailFragment extends Fragment implements TopMoviesFragmentAdapter.OnClickListener{
+public class ThumbnailFragment extends Fragment implements ThumbnailFragmentAdapter.OnClickListener{
+
 
 
     //Used by butterknife to set views to null
@@ -33,10 +37,10 @@ public class ThumbnailFragment extends Fragment implements TopMoviesFragmentAdap
     RecyclerView mRecyclerView;
 
     private List<String> thumbnails;
-    private RecyclerView.LayoutManager mLayoutManager;
+    private GridLayoutManager mLayoutManager;
     private int spanCount = 2;//setting the span count for the grid view
 
-    private TopMoviesFragmentAdapter mAdapter;
+    private ThumbnailFragmentAdapter mAdapter;
 
     private OnFragmentInteractionListener mListener;
 
@@ -53,11 +57,19 @@ public class ThumbnailFragment extends Fragment implements TopMoviesFragmentAdap
         //butterknife set up
         unbinder = ButterKnife.bind(this, rootView);
 
-
         mLayoutManager = new GridLayoutManager(getActivity(), spanCount);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new TopMoviesFragmentAdapter(getContext(), thumbnails, this);
+        mAdapter = new ThumbnailFragmentAdapter(getContext(), thumbnails, this);
         mRecyclerView.setAdapter(mAdapter);
+
+        if(savedInstanceState != null){
+            update(savedInstanceState.getStringArrayList(Constants.BUNDLE_KEY.THUMBNAIL));
+            mLayoutManager.onRestoreInstanceState(savedInstanceState.getParcelable(Constants.BUNDLE_KEY.LAYOUT));
+        }
+
+
+
+
 
         return rootView;
     }
@@ -102,4 +114,10 @@ public class ThumbnailFragment extends Fragment implements TopMoviesFragmentAdap
         mAdapter.setData(thumbnails);
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putStringArrayList(Constants.BUNDLE_KEY.THUMBNAIL, (ArrayList) thumbnails);
+        outState.putParcelable(Constants.BUNDLE_KEY.LAYOUT, mLayoutManager.onSaveInstanceState());
+    }
 }
