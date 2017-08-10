@@ -1,5 +1,6 @@
 package moviestalkercom.red_spark.redsparkdev.moviestalker.data;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,13 +9,13 @@ import java.util.List;
  *  * JSON data converted into a java class via GSON
  */
 
-public class ItemData {
+public class ItemData implements Serializable{
     public String page;
     public String total_results;
     public String total_pages;
 
     public List<Result> results = new ArrayList<>();
-    public class Result {
+    public class Result implements Serializable{
         String vote_count;
         String id;
         String video;

@@ -1,6 +1,7 @@
 package moviestalkercom.red_spark.redsparkdev.moviestalker;
 
 import android.net.Uri;
+import android.os.PersistableBundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
@@ -26,6 +27,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static moviestalkercom.red_spark.redsparkdev.moviestalker.data.Constants.TAB_TYPE.MOVIES;
+
 public class MainActivity extends AppCompatActivity implements ThumbnailFragment.OnFragmentInteractionListener{
 
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -37,6 +40,8 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
 
     MainFragmentPagerAdapter mAdapter;
 
+    private ItemData movieData;
+    private ItemData tvSeriesData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,14 +57,26 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
         //checking for save instance state
         if(savedInstanceState == null) {
 
-            buildTab(Constants.TAB_TYPE.MOVIES);
+            buildTab(MOVIES);
             buildTab(Constants.TAB_TYPE.SERIES);
             buildTab(Constants.TAB_TYPE.FAVORITES);
+
+        }else{
+            movieData = (ItemData) savedInstanceState
+                    .getSerializable(Constants.TAB_TYPE.MOVIES.getTag());
+            tvSeriesData = (ItemData) savedInstanceState
+                    .getSerializable(Constants.TAB_TYPE.SERIES.getTag());
 
         }
 
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(Constants.TAB_TYPE.MOVIES.getTag(), movieData);
+        outState.putSerializable(Constants.TAB_TYPE.SERIES.getTag(), tvSeriesData);
+    }
 
     @Override
     public void onThumbnailClick(Uri uri) {
@@ -108,11 +125,19 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
             @Override
             public void onResponse(Call<ItemData> call, Response<ItemData> response) {
 
+                switch (tabType){
+                    case MOVIES:
+                        movieData = response.body(); break;
+                    case SERIES:
+                        tvSeriesData = response.body(); break;
+                }
+
                 //Removing the progress bar since we have loaded the data
                 mProgressBar.setVisibility(View.GONE);
 
                 //get(0) since there should only be one list item in the response
                 if(response.body() != null){
+
 
                     ArrayList<String> thumbnails = extractThumbnails(response.body());
                     FragmentManager mFragmentManager = getSupportFragmentManager();
