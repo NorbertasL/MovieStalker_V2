@@ -1,9 +1,11 @@
 package moviestalkercom.red_spark.redsparkdev.moviestalker;
 
 import android.app.ActionBar;
+import android.graphics.Color;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -53,11 +55,9 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-
-
-
-
-
+        PagerTabStrip pagerTabStrip = (PagerTabStrip) findViewById(R.id.pageTabStrip);
+        pagerTabStrip.setDrawFullUnderline(true);
+        pagerTabStrip.setTabIndicatorColor(Color.RED);
 
 
         /**
