@@ -1,11 +1,8 @@
 package moviestalkercom.red_spark.redsparkdev.moviestalker;
 
-import android.app.ActionBar;
-import android.graphics.Color;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,9 +10,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -36,16 +31,11 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
     private static final String TAG = MainActivity.class.getSimpleName();
 
 
-
-
-    private static String FRAGMENT_TAG = "Top_Movie_Fragment";
-    private FragmentManager mFragmentManager;
-
     @BindView(R.id.errorText)TextView mErrorView;
     @BindView(R.id.progressBar)ProgressBar mProgressBar;
+    @BindView(R.id.pager) ViewPager mPager;
 
     MainFragmentPagerAdapter mAdapter;
-    ViewPager mPager;
 
 
     @Override
@@ -55,41 +45,16 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        PagerTabStrip pagerTabStrip = (PagerTabStrip) findViewById(R.id.pageTabStrip);
-        pagerTabStrip.setDrawFullUnderline(true);
-        pagerTabStrip.setTabIndicatorColor(Color.RED);
-
-
-        /**
-        // Watch for button clicks.
-        Button button = (Button)findViewById(R.id.goto_first);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPager.setCurrentItem(0);
-            }
-        });
-        button = (Button)findViewById(R.id.goto_last);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPager.setCurrentItem(2);
-            }
-        });
-         */
-        mFragmentManager = getSupportFragmentManager();
 
         mAdapter = new MainFragmentPagerAdapter(getSupportFragmentManager());
-        mPager = (ViewPager)findViewById(R.id.pager);
         mPager.setAdapter(mAdapter);
 
         //checking for save instance state
         if(savedInstanceState == null) {
 
-           // mProgressBar.setVisibility(View.VISIBLE);
-            requestMovieData(0);
-            requestMovieData(1);
-
+            buildTab(Constants.TAB_TYPE.MOVIES);
+            buildTab(Constants.TAB_TYPE.SERIES);
+            buildTab(Constants.TAB_TYPE.FAVORITES);
 
         }
 
@@ -110,10 +75,7 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
 
     }
 
-    private void requestMovieData(int tabNumber){
-        LogHelp.print(TAG, "requestMovieData for tab:"+tabNumber);
-
-        final int tab = tabNumber;
+    private void buildTab(final Constants.TAB_TYPE tabType){
         //Creating retrofit builder instance
         final Retrofit.Builder builder =  new Retrofit.Builder()
                 //adding a base url that will be quarried
@@ -130,21 +92,10 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
         //Calling the action on the interface(we only have one and it's a @GET request)
         //We also specify the variables of the url
 
-        // TODO: 10-Aug-17 fix this up, only done for testing
-        String type;
-        switch(tabNumber){
-            case 0:
-                type = "movie";
-                break;
-            case 1:
-                type = "tv";
-                break;
-            default:
-                type = "";
-        }
+
 
         String url = Constants.MOVIE_BASE_URL
-                + type
+                + tabType.getTag()
                 + "/top_rated?api_key="
                 + getString(R.string.api_key);
         Call<ItemData> networkCall = networkInterface
@@ -162,9 +113,11 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
 
                 //get(0) since there should only be one list item in the response
                 if(response.body() != null){
+
                     ArrayList<String> thumbnails = extractThumbnails(response.body());
+                    FragmentManager mFragmentManager = getSupportFragmentManager();
                     List<Fragment> fragments = mFragmentManager.getFragments();
-                    ThumbnailFragment movieFragment = (ThumbnailFragment)fragments.get(tab);
+                    ThumbnailFragment movieFragment = (ThumbnailFragment)fragments.get(tabType.getPosition());
                     movieFragment.update(thumbnails);
 
 

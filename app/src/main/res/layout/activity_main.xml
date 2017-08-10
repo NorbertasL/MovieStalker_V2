@@ -2,46 +2,50 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/colorPrimaryDark"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="moviestalkercom.red_spark.redsparkdev.moviestalker.MainActivity">
 
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:layout_weight="1">
 
+        <android.support.v4.view.PagerTabStrip
+            android:id="@+id/pageTabStrip"
+            style="@style/StripText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary">
+
+        </android.support.v4.view.PagerTabStrip>
+
+        <FrameLayout
+            android:id="@+id/fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+
+    </android.support.v4.view.ViewPager>
     <TextView
         android:id="@+id/errorText"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:foregroundGravity="center"
         android:text="@string/network_error"
-        android:visibility="gone"
-        />
+        android:textColor="#ffffff"
+        android:visibility="gone" />
+
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="@dimen/progress_bar_width"
         android:layout_height="@dimen/progress_bar_height"
         android:layout_gravity="center"
         android:visibility="gone"/>
-
-    <android.support.v4.view.ViewPager
-        android:id="@+id/pager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1">
-        <android.support.v4.view.PagerTabStrip
-            android:id="@+id/pageTabStrip"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-        </android.support.v4.view.PagerTabStrip >
-        <FrameLayout
-            android:id="@+id/fragment_container"
-            android:layout_height="match_parent"
-            android:layout_width="match_parent"
-            />
-
-    </android.support.v4.view.ViewPager>
-
 
 
 

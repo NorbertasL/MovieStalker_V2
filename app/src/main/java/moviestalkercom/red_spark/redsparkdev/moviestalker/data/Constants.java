@@ -14,14 +14,40 @@ public class Constants {
         public static final String LAYOUT = "LAYOUT_KEY";
         public static final String POSITION = "POSITION_KEY";
     }
-    public static class POSTER_SIZE{
-        public static final String W95 = "w92";
-        public static final String W154 = "w154";
-        public static final String W185 = "w185";
-        public static final String W342 = "w342";
-        public static final String W500 = "w500";
-        public static final String W780 = "w780";
-        public static final String ORIGINAL = "original";
+    public enum POSTER_SIZE{
+        W95("w92"),
+        w154("w154"),
+        W185("w185"),
+        W342("w342"),
+        W500("w500"),
+        W780("w780"),
+        ORIGINAL("original");
+        String urlTag;
+        POSTER_SIZE(String urlTag) {
+            this.urlTag = urlTag;
+        }
+        public String getUrlTag(){
+            return urlTag;
+        }
+
+    }
+
+    public enum TAB_TYPE{MOVIES("movie", 0), SERIES("tv", 1), FAVORITES("fav", 2);
+        String tag;
+        int position;
+        TAB_TYPE(String tag, int position){
+            this.tag = tag; this.position = position;
+        }
+        public String getTag(){
+            return tag;
+        }
+        public int getPosition(){
+            return position;
+        }
+
+
+
+
     }
 
 }

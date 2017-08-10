@@ -58,7 +58,7 @@ public class ThumbnailFragmentAdapter extends RecyclerView.Adapter<ThumbnailFrag
     public void onBindViewHolder(MyViewHolder holder, int position) {
         //LogHelp.print(TAG, "onBindViewHolder for pos:" + position);
         String imageUrl =
-              Constants.POSTER_BASE_URL + Constants.POSTER_SIZE.W95 + mThumbnails.get(position);
+              Constants.POSTER_BASE_URL + Constants.POSTER_SIZE.W95.getUrlTag() + mThumbnails.get(position);
         GlideApp.with(holder.itemView.getContext()).load(imageUrl).placeholder(R.drawable.test).into(holder.thumbnail);
     }
 
