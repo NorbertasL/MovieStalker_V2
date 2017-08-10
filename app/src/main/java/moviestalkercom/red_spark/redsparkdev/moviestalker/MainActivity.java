@@ -30,17 +30,16 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements ThumbnailFragment.OnFragmentInteractionListener{
 
+    private static final String TAG = MainActivity.class.getSimpleName();
+
 
 
 
     private static String FRAGMENT_TAG = "Top_Movie_Fragment";
     private FragmentManager mFragmentManager;
 
-    private ItemData movieData;
-    private ItemData tvData;
     @BindView(R.id.errorText)TextView mErrorView;
     @BindView(R.id.progressBar)ProgressBar mProgressBar;
-    //ThumbnailFragment topMoviesFragment;
 
     MainFragmentPagerAdapter mAdapter;
     ViewPager mPager;
@@ -49,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        LogHelp.print(TAG, "onCreate");
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
@@ -110,6 +110,8 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
     }
 
     private void requestMovieData(int tabNumber){
+        LogHelp.print(TAG, "requestMovieData for tab:"+tabNumber);
+
         final int tab = tabNumber;
         //Creating retrofit builder instance
         final Retrofit.Builder builder =  new Retrofit.Builder()
@@ -159,8 +161,7 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
 
                 //get(0) since there should only be one list item in the response
                 if(response.body() != null){
-                    movieData = response.body();
-                    ArrayList<String> thumbnails = extractThumbnails(movieData);
+                    ArrayList<String> thumbnails = extractThumbnails(response.body());
                     List<Fragment> fragments = mFragmentManager.getFragments();
                     ThumbnailFragment movieFragment = (ThumbnailFragment)fragments.get(tab);
                     movieFragment.update(thumbnails);

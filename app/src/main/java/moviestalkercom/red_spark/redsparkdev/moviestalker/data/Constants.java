@@ -7,6 +7,7 @@ package moviestalkercom.red_spark.redsparkdev.moviestalker.data;
 public class Constants {
     public final static String MOVIE_BASE_URL = "https://api.themoviedb.org/3/";
     public final static String POSTER_BASE_URL = "https://image.tmdb.org/t/p/";
+    public final static String TEST_TAG = "TEST";
 
     public static class BUNDLE_KEY{
         public static final String THUMBNAIL = "THUMBNAIL_KEY";

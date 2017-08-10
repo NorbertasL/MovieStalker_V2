@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import moviestalkercom.red_spark.redsparkdev.moviestalker.LogHelp;
 import moviestalkercom.red_spark.redsparkdev.moviestalker.fragments.ThumbnailFragment;
 
 /**
@@ -11,12 +12,14 @@ import moviestalkercom.red_spark.redsparkdev.moviestalker.fragments.ThumbnailFra
  */
 
 public class MainFragmentPagerAdapter extends FragmentPagerAdapter{
+    private static final String TAG = MainFragmentPagerAdapter.class.getSimpleName();
     public MainFragmentPagerAdapter(FragmentManager fm) {
         super(fm);
     }
 
     @Override
     public Fragment getItem(int position) {
+        LogHelp.print(TAG, "getItem Called for pos:" + position);
         switch(position){
             case 0:
                return new ThumbnailFragment();
@@ -31,6 +34,8 @@ public class MainFragmentPagerAdapter extends FragmentPagerAdapter{
 
     @Override
     public int getCount() {
+        //LogHelp.print(TAG, "getCount");
         return 3;
+
     }
 }

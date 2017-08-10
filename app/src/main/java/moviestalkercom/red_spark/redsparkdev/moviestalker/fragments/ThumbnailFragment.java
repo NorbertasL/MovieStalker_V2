@@ -1,22 +1,23 @@
 package moviestalkercom.red_spark.redsparkdev.moviestalker.fragments;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import moviestalkercom.red_spark.redsparkdev.moviestalker.LogHelp;
 import moviestalkercom.red_spark.redsparkdev.moviestalker.R;
 import moviestalkercom.red_spark.redsparkdev.moviestalker.data.Constants;
 import moviestalkercom.red_spark.redsparkdev.moviestalker.fragments.adapters.ThumbnailFragmentAdapter;
@@ -29,15 +30,17 @@ import moviestalkercom.red_spark.redsparkdev.moviestalker.fragments.adapters.Thu
  */
 public class ThumbnailFragment extends Fragment implements ThumbnailFragmentAdapter.OnClickListener{
 
-
+    private final String TAG = ThumbnailFragment.class.getSimpleName();
 
     //Used by butterknife to set views to null
     private Unbinder unbinder;
     @BindView(R.id.rv_movieGrid)
     RecyclerView mRecyclerView;
 
-    private List<String> thumbnails;
+    private List<String> thumbnails = Collections.emptyList();
     private GridLayoutManager mLayoutManager;
+
+
     private int spanCount = 2;//setting the span count for the grid view
 
     private ThumbnailFragmentAdapter mAdapter;
@@ -55,7 +58,12 @@ public class ThumbnailFragment extends Fragment implements ThumbnailFragmentAdap
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_top_movies, container, false);
         //butterknife set up
+        LogHelp.print(TAG,"Fragment Created");
         unbinder = ButterKnife.bind(this, rootView);
+
+        if(getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            spanCount = 4;
+        }
 
         mLayoutManager = new GridLayoutManager(getActivity(), spanCount);
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -78,12 +86,14 @@ public class ThumbnailFragment extends Fragment implements ThumbnailFragmentAdap
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+        LogHelp.print(TAG,"Fragment Destoyed");
     }
 
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        LogHelp.print(TAG,"Fragment attach called");
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
@@ -96,6 +106,7 @@ public class ThumbnailFragment extends Fragment implements ThumbnailFragmentAdap
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        LogHelp.print(TAG,"Fragment Detatched");
     }
 
     @Override
@@ -112,12 +123,15 @@ public class ThumbnailFragment extends Fragment implements ThumbnailFragmentAdap
     public void update( List<String> thumbnails){
         this.thumbnails = thumbnails;
         mAdapter.setData(thumbnails);
+        LogHelp.print(TAG,"Fragment Update");
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        LogHelp.print(TAG, "Fragment savesate");
         outState.putStringArrayList(Constants.BUNDLE_KEY.THUMBNAIL, (ArrayList) thumbnails);
         outState.putParcelable(Constants.BUNDLE_KEY.LAYOUT, mLayoutManager.onSaveInstanceState());
     }
+
 }
