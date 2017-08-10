@@ -10,21 +10,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import moviestalkercom.red_spark.redsparkdev.moviestalker.R;
-import moviestalkercom.red_spark.redsparkdev.moviestalker.data.Constants;
 import moviestalkercom.red_spark.redsparkdev.moviestalker.fragments.adapters.TopMoviesFragmentAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link TopMoviesFragment.OnFragmentInteractionListener} interface
+ * {@link ThumbnailFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
  */
-public class TopMoviesFragment extends Fragment implements TopMoviesFragmentAdapter.OnClickListener{
+public class ThumbnailFragment extends Fragment implements TopMoviesFragmentAdapter.OnClickListener{
 
 
     //Used by butterknife to set views to null
@@ -35,11 +35,12 @@ public class TopMoviesFragment extends Fragment implements TopMoviesFragmentAdap
     private List<String> thumbnails;
     private RecyclerView.LayoutManager mLayoutManager;
     private int spanCount = 2;//setting the span count for the grid view
+
     private TopMoviesFragmentAdapter mAdapter;
 
     private OnFragmentInteractionListener mListener;
 
-    public TopMoviesFragment() {
+    public ThumbnailFragment() {
         // Required empty public constructor
     }
 
@@ -52,11 +53,6 @@ public class TopMoviesFragment extends Fragment implements TopMoviesFragmentAdap
         //butterknife set up
         unbinder = ButterKnife.bind(this, rootView);
 
-        if(getArguments() != null){
-            thumbnails = getArguments().getStringArrayList(Constants.BUNDLE_KEY.THUMBNAIL);
-        }else {
-            mListener.onError();
-        }
 
         mLayoutManager = new GridLayoutManager(getActivity(), spanCount);
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -92,14 +88,18 @@ public class TopMoviesFragment extends Fragment implements TopMoviesFragmentAdap
 
     @Override
     public void onItemClick(View view, int position) {
-        // TODO: 09-Aug-17 handle the on click
-
     }
 
-    public interface OnFragmentInteractionListener {
 
+
+
+    public interface OnFragmentInteractionListener {
         void onThumbnailClick(Uri uri);
         void onError();
+    }
+    public void update( List<String> thumbnails){
+        this.thumbnails = thumbnails;
+        mAdapter.setData(thumbnails);
     }
 
 }

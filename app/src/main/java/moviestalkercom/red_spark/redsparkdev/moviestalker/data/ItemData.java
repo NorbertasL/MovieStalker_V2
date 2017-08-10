@@ -8,7 +8,7 @@ import java.util.List;
  *  * JSON data converted into a java class via GSON
  */
 
-public class MovieData {
+public class ItemData {
     public String page;
     public String total_results;
     public String total_pages;

@@ -6,10 +6,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ImageView;
 import java.util.Collections;
 import java.util.List;
 import moviestalkercom.red_spark.redsparkdev.moviestalker.R;
+import moviestalkercom.red_spark.redsparkdev.moviestalker.data.Constants;
+import com.bumptech.glide.Glide;
+
 
 /**
  * Created by Red_Spark on 08-Aug-17.
@@ -19,6 +22,7 @@ public class TopMoviesFragmentAdapter extends RecyclerView.Adapter<TopMoviesFrag
     private LayoutInflater inflater;
     private List<String> mThumbnails = Collections.emptyList();
     private OnClickListener mOnClickListener;
+
 
     public TopMoviesFragmentAdapter(Context context, List<String> thumbnails, OnClickListener onClickListener){
         inflater = LayoutInflater.from(context);
@@ -32,7 +36,9 @@ public class TopMoviesFragmentAdapter extends RecyclerView.Adapter<TopMoviesFrag
         }
 
     }
-    public interface OnClickListener{void onItemClick(View view, int position);}
+    public interface OnClickListener{
+        void onItemClick(View view, int position);
+    }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -43,22 +49,26 @@ public class TopMoviesFragmentAdapter extends RecyclerView.Adapter<TopMoviesFrag
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        holder.textView.setText(mThumbnails.get(position));
+        String imageUrl =
+              Constants.POSTER_BASE_URL + Constants.POSTER_SIZE.W185 + mThumbnails.get(position);
+        Glide.with(holder.itemView.getContext()).load(imageUrl).into(holder.thumbnail);
 
     }
 
     @Override
     public int getItemCount() {
-        return mThumbnails.size();
+        if(mThumbnails != null)
+            return mThumbnails.size();
+        return 0;
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView textView;
+        ImageView thumbnail;
 
 
         public MyViewHolder(View itemView) {
             super(itemView);
-            textView = (TextView) itemView.findViewById(R.id.tv_Test);
+            thumbnail = (ImageView) itemView.findViewById(R.id.image_thumbnail);
             itemView.setOnClickListener(this);
 
 
@@ -66,8 +76,12 @@ public class TopMoviesFragmentAdapter extends RecyclerView.Adapter<TopMoviesFrag
 
         @Override
         public void onClick(View v) {
-            mOnClickListener.onItemClick(v, getAdapterPosition());
+            mOnClickListener.onItemClick(v, getLayoutPosition());
         }
+    }
+    public void setData(List<String> thumbnails){
+        this.mThumbnails = thumbnails;
+        notifyDataSetChanged();
     }
 
 }

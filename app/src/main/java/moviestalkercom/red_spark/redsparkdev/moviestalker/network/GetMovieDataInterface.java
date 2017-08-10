@@ -1,8 +1,6 @@
 package moviestalkercom.red_spark.redsparkdev.moviestalker.network;
 
-import java.util.ArrayList;
-
-import moviestalkercom.red_spark.redsparkdev.moviestalker.data.MovieData;
+import moviestalkercom.red_spark.redsparkdev.moviestalker.data.ItemData;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Url;
@@ -14,5 +12,5 @@ import retrofit2.http.Url;
 
 public interface GetMovieDataInterface {
     @GET
-    Call<MovieData> movieList(@Url String url);
+    Call<ItemData> movieList(@Url String url);
 }
