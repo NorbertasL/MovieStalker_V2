@@ -37,7 +37,7 @@ public class ThumbnailFragment extends Fragment implements ThumbnailFragmentAdap
     @BindView(R.id.rv_movieGrid)
     RecyclerView mRecyclerView;
 
-    private List<String> thumbnails = Collections.emptyList();
+    private List<String> thumbnails;
     private GridLayoutManager mLayoutManager;
 
 
@@ -130,8 +130,10 @@ public class ThumbnailFragment extends Fragment implements ThumbnailFragmentAdap
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         LogHelp.print(TAG, "Fragment savesate");
-        outState.putStringArrayList(Constants.BUNDLE_KEY.THUMBNAIL, (ArrayList) thumbnails);
-        outState.putParcelable(Constants.BUNDLE_KEY.LAYOUT, mLayoutManager.onSaveInstanceState());
+        if(thumbnails != null) {
+            outState.putStringArrayList(Constants.BUNDLE_KEY.THUMBNAIL, (ArrayList) thumbnails);
+            outState.putParcelable(Constants.BUNDLE_KEY.LAYOUT, mLayoutManager.onSaveInstanceState());
+        }
     }
 
 }

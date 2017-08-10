@@ -64,8 +64,9 @@ public class ThumbnailFragmentAdapter extends RecyclerView.Adapter<ThumbnailFrag
 
     @Override
     public int getItemCount() {
-        LogHelp.print(TAG, "mThumbnails was:"+mThumbnails.size());
-        return mThumbnails.size();
+        if(mThumbnails != null)
+            return mThumbnails.size();
+        return 0;
 
     }
 

@@ -38,4 +38,22 @@ public class MainFragmentPagerAdapter extends FragmentPagerAdapter{
         return 3;
 
     }
+
+    @Override
+    public CharSequence getPageTitle(int position) {
+        switch(position){
+            case 0:
+                return "Movies";
+            case 1:
+                return "TV Series";
+            case 2:
+                return "Favorites";
+            default:
+                return null;
+        }
+
+
+
+        // super.getPageTitle(position);
+    }
 }
