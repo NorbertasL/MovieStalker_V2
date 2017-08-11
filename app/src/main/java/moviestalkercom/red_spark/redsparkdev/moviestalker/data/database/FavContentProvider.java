@@ -1,4 +1,4 @@
-package moviestalkercom.red_spark.redsparkdev.moviestalker.data;
+package moviestalkercom.red_spark.redsparkdev.moviestalker.data.database;
 
 
 /**
