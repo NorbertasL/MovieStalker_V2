@@ -1,13 +1,11 @@
 package moviestalkercom.red_spark.redsparkdev.moviestalker.fragments;
 
-import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RatingBar;
 import android.widget.TextView;
 
 import butterknife.BindView;
@@ -16,6 +14,7 @@ import butterknife.Unbinder;
 import moviestalkercom.red_spark.redsparkdev.moviestalker.R;
 import moviestalkercom.red_spark.redsparkdev.moviestalker.data.Constants;
 import moviestalkercom.red_spark.redsparkdev.moviestalker.data.ItemData;
+import moviestalkercom.red_spark.redsparkdev.moviestalker.network.GlideApp;
 
 public class ItemDetailFragment extends Fragment {
 
@@ -23,9 +22,10 @@ public class ItemDetailFragment extends Fragment {
     private ItemData.Result data;
 
     @BindView(R.id.iv_backDrop)ImageView mBackDrop;
-    @BindView(R.id.iv_thumbnail)ImageView mThumbnail;
     @BindView(R.id.tv_Title)TextView mTitle;
     @BindView(R.id.tv_disc)TextView mDisc;
+    @BindView(R.id.ratingText)TextView mRatingText;
+    @BindView(R.id.releaseDate)TextView mRelaseDate;
 
     public ItemDetailFragment() {
         // Required empty public constructor
@@ -45,6 +45,12 @@ public class ItemDetailFragment extends Fragment {
             mTitle.setText(data.getTitle());
             mDisc.setText(data.getOverview());
         }
+
+        String backdropUrl = Constants.IMAGE_BASE_URL+Constants.BACKDROP_SIZE.W300.getUrlTag()+data.getBackdrop_path();
+        GlideApp.with(getContext()).load(backdropUrl).into(mBackDrop);
+
+        mRatingText.setText(data.getVote_average() + "/10");
+        mRelaseDate.setText("Release Date:\n"+data.getRelease_date());
 
 
         return rootView;

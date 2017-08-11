@@ -10,12 +10,9 @@ import android.widget.ImageView;
 import java.util.Collections;
 import java.util.List;
 
-import moviestalkercom.red_spark.redsparkdev.moviestalker.LogHelp;
 import moviestalkercom.red_spark.redsparkdev.moviestalker.R;
 import moviestalkercom.red_spark.redsparkdev.moviestalker.data.Constants;
 import moviestalkercom.red_spark.redsparkdev.moviestalker.network.GlideApp;
-
-import com.bumptech.glide.Glide;
 
 
 /**
@@ -58,7 +55,7 @@ public class ThumbnailFragmentAdapter extends RecyclerView.Adapter<ThumbnailFrag
     public void onBindViewHolder(MyViewHolder holder, int position) {
         //LogHelp.print(TAG, "onBindViewHolder for pos:" + position);
         String imageUrl =
-              Constants.POSTER_BASE_URL + Constants.POSTER_SIZE.W95.getUrlTag() + mThumbnails.get(position);
+              Constants.IMAGE_BASE_URL + Constants.POSTER_SIZE.W95.getUrlTag() + mThumbnails.get(position);
         GlideApp.with(holder.itemView.getContext()).load(imageUrl).placeholder(R.drawable.placeholder_thumbnail).into(holder.thumbnail);
     }
 

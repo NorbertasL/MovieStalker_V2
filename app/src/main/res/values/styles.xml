@@ -10,16 +10,16 @@
 
     <style name="StripText">
         <item name="android:textColor">#FFFFFF</item>
-        <item name="android:textSize">40sp</item>
+        <item name="android:textSize">20sp</item>
         <item name="android:textStyle">bold</item>
     </style>
     <style name="NormalText">
         <item name="android:textColor">#FFFFFF</item>
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">15sp</item>
     </style>
     <style name="TitleText">
         <item name="android:textColor">#FFFFFF</item>
-        <item name="android:textSize">30sp</item>
+        <item name="android:textSize">20sp</item>
     </style>
 
 </resources>
