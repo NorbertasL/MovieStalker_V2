@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorAccent"
     android:clipToPadding="false"
-    tools:context="moviestalkercom.red_spark.redsparkdev.moviestalker.fragments.ItemDetailFragment">
+    tools:context="com.red_spark.redsparkdev.moviestalker.fragments.ItemDetailFragment">
 
     <ImageView
         android:id="@+id/iv_backDrop"

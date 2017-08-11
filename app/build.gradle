@@ -4,7 +4,7 @@ android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
     defaultConfig {
-        applicationId "moviestalkercom.red_spark.redsparkdev.moviestalker"
+        applicationId "com.red_spark.redsparkdev.moviestalker"
         minSdkVersion 15
         targetSdkVersion 25
         versionCode 1

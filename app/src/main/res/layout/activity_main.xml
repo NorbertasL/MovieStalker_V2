@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="moviestalkercom.red_spark.redsparkdev.moviestalker.MainActivity">
+    tools:context="com.red_spark.redsparkdev.moviestalker.MainActivity">
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="@dimen/progress_bar_width"
