@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="progress_bar_height">50dp</dimen>
-    <dimen name="progress_bar_width">50dp</dimen>
+    <dimen name="progress_bar_height">100dp</dimen>
+    <dimen name="progress_bar_width">@dimen/progress_bar_height</dimen>
 </resources>

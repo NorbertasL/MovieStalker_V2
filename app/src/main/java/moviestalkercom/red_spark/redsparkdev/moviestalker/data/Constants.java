@@ -13,6 +13,7 @@ public class Constants {
         public static final String THUMBNAIL = "THUMBNAIL_KEY";
         public static final String LAYOUT = "LAYOUT_KEY";
         public static final String POSITION = "POSITION_KEY";
+        public static final String DATA = "DATA_KEY";
     }
     public enum POSTER_SIZE{
         W95("w92"),
@@ -29,6 +30,16 @@ public class Constants {
         public String getUrlTag(){
             return urlTag;
         }
+
+    }
+    public enum BACKDROP_SIZE{
+        W300("w300"),
+        W780("w780"),
+        W1280("1280"),
+        ORIGINAL("original");
+        String urlTag;
+        BACKDROP_SIZE(String urlTag){this.urlTag = urlTag;}
+        public String getUrlTag(){return urlTag;}
 
     }
 

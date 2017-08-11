@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/colorPrimaryDark"
@@ -8,12 +8,25 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="moviestalkercom.red_spark.redsparkdev.moviestalker.MainActivity">
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="@dimen/progress_bar_width"
+        android:layout_height="@dimen/progress_bar_height"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+    <FrameLayout
+        android:id="@+id/detail_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
+
+
 
     <android.support.v4.view.ViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
-        android:layout_height="0px"
-        android:layout_weight="1">
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
         <android.support.v4.view.PagerTabStrip
             android:id="@+id/pageTabStrip"
@@ -21,7 +34,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary">
-
         </android.support.v4.view.PagerTabStrip>
 
         <FrameLayout
@@ -35,18 +47,14 @@
         android:id="@+id/errorText"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:foregroundGravity="center"
+        android:textSize="50sp"
+        android:padding="10dp"
         android:text="@string/network_error"
         android:textColor="#ffffff"
         android:visibility="gone" />
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="@dimen/progress_bar_width"
-        android:layout_height="@dimen/progress_bar_height"
-        android:layout_gravity="center"
-        android:visibility="gone"/>
 
 
 
-</LinearLayout >
+
+</FrameLayout >

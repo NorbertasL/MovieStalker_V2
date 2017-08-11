@@ -1,13 +1,14 @@
 package moviestalkercom.red_spark.redsparkdev.moviestalker;
 
 import android.net.Uri;
-import android.os.PersistableBundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Layout;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -18,6 +19,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import moviestalkercom.red_spark.redsparkdev.moviestalker.data.Constants;
 import moviestalkercom.red_spark.redsparkdev.moviestalker.data.ItemData;
+import moviestalkercom.red_spark.redsparkdev.moviestalker.fragments.ItemDetailFragment;
 import moviestalkercom.red_spark.redsparkdev.moviestalker.fragments.ThumbnailFragment;
 import moviestalkercom.red_spark.redsparkdev.moviestalker.fragments.adapters.MainFragmentPagerAdapter;
 import moviestalkercom.red_spark.redsparkdev.moviestalker.network.GetMovieDataInterface;
@@ -37,8 +39,11 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
     @BindView(R.id.errorText)TextView mErrorView;
     @BindView(R.id.progressBar)ProgressBar mProgressBar;
     @BindView(R.id.pager) ViewPager mPager;
+    @BindView(R.id.detail_fragment_container) FrameLayout detailFragmentContainer;
 
     MainFragmentPagerAdapter mAdapter;
+    FragmentManager mFragmentManger;
+    ItemDetailFragment itemDetailFragment;
 
     private ItemData movieData;
     private ItemData tvSeriesData;
@@ -46,13 +51,15 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LogHelp.print(TAG, "onCreate");
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-
-
+        mFragmentManger = getSupportFragmentManager();
+        mPager.setVisibility(View.VISIBLE);
         mAdapter = new MainFragmentPagerAdapter(getSupportFragmentManager());
         mPager.setAdapter(mAdapter);
+
+
+
 
         //checking for save instance state
         if(savedInstanceState == null) {
@@ -79,8 +86,16 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
     }
 
     @Override
-    public void onThumbnailClick(Uri uri) {
-        // TODO: 09-Aug-17
+    public void onThumbnailClick(int position, Constants.TAB_TYPE fragmentType) {
+        switch (fragmentType){
+            case MOVIES:
+                openDetailsFragment(movieData.getResults().get(position));break;
+            case SERIES:
+                openDetailsFragment(tvSeriesData.getResults().get(position));break;
+
+        }
+
+                LogHelp.print(TAG, fragmentType+"Clicked on : "+position);
 
     }
 
@@ -117,6 +132,7 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
                 + getString(R.string.api_key);
         Call<ItemData> networkCall = networkInterface
                 .movieList(url);
+        LogHelp.print(TAG, url);
 
         mProgressBar.setVisibility(View.VISIBLE);
         //executing the request asynchronously
@@ -137,20 +153,21 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
 
                 //get(0) since there should only be one list item in the response
                 if(response.body() != null){
-
+                    mErrorView.setVisibility(View.GONE);
 
                     ArrayList<String> thumbnails = extractThumbnails(response.body());
                     FragmentManager mFragmentManager = getSupportFragmentManager();
                     List<Fragment> fragments = mFragmentManager.getFragments();
                     ThumbnailFragment movieFragment = (ThumbnailFragment)fragments.get(tabType.getPosition());
-                    movieFragment.update(thumbnails);
+                    movieFragment.update(thumbnails, tabType);
 
 
 
 
-                    mErrorView.setVisibility(View.GONE);
+
                 }else{
-                     mErrorView.setVisibility(View.VISIBLE);
+                    LogHelp.print(TAG, "response.body() == null");
+                    //mErrorView.setVisibility(View.VISIBLE);
                 }
 
 
@@ -161,16 +178,41 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
             public void onFailure(Call<ItemData> call, Throwable t) {
                 mErrorView.setVisibility(View.VISIBLE);
                 mProgressBar.setVisibility(View.GONE);
+                LogHelp.print(TAG, "onFailure");
             }
 
             private ArrayList<String> extractThumbnails(ItemData data){
                 ArrayList<String> thumbnails = new ArrayList<>();
                 for(ItemData.Result result: data.results){
-                    thumbnails.add(result.getPosterPath());
+                    thumbnails.add(result.getPoster_path());
                 }
                 return thumbnails;
             }
         });
 
+    }
+    private void openDetailsFragment(ItemData.Result itemDetails){
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(Constants.BUNDLE_KEY.DATA, itemDetails);
+        itemDetailFragment = new ItemDetailFragment();
+        itemDetailFragment.setArguments(bundle);
+
+        mPager.setVisibility(View.GONE);
+        detailFragmentContainer.setVisibility(View.VISIBLE);
+
+        mFragmentManger.beginTransaction()
+                .replace(R.id.detail_fragment_container, itemDetailFragment, Constants.BUNDLE_KEY.LAYOUT)
+                .commit();
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        if( mPager.getVisibility() == View.GONE){
+            mPager.setVisibility(View.VISIBLE);
+            detailFragmentContainer.setVisibility(View.GONE);
+        }else{
+            super.onBackPressed();
+        }
     }
 }

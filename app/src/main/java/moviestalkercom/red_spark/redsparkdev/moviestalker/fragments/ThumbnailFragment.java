@@ -2,7 +2,6 @@ package moviestalkercom.red_spark.redsparkdev.moviestalker.fragments;
 
 import android.content.Context;
 import android.content.res.Configuration;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -10,9 +9,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,6 +37,7 @@ public class ThumbnailFragment extends Fragment implements ThumbnailFragmentAdap
     RecyclerView mRecyclerView;
 
     private List<String> thumbnails;
+    private Constants.TAB_TYPE fragmentType;
     private GridLayoutManager mLayoutManager;
 
 
@@ -52,18 +52,22 @@ public class ThumbnailFragment extends Fragment implements ThumbnailFragmentAdap
     }
 
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_top_movies, container, false);
         //butterknife set up
-        LogHelp.print(TAG,"Fragment Created");
         unbinder = ButterKnife.bind(this, rootView);
 
-        if(getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-            spanCount = 4;
-        }
+        LogHelp.print(TAG, rootView.getWidth()+"");
+
+        /**
+        ImageView imageView = new ImageView(this.getContext());
+        imageView.setAdjustViewBounds(true);
+        imageView.setMaxWidth();
+         **/
 
         mLayoutManager = new GridLayoutManager(getActivity(), spanCount);
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -71,7 +75,8 @@ public class ThumbnailFragment extends Fragment implements ThumbnailFragmentAdap
         mRecyclerView.setAdapter(mAdapter);
 
         if(savedInstanceState != null){
-            update(savedInstanceState.getStringArrayList(Constants.BUNDLE_KEY.THUMBNAIL));
+            update(savedInstanceState.getStringArrayList(Constants.BUNDLE_KEY.THUMBNAIL)
+                    ,(Constants.TAB_TYPE) savedInstanceState.getSerializable(Constants.BUNDLE_KEY.POSITION) );
             mLayoutManager.onRestoreInstanceState(savedInstanceState.getParcelable(Constants.BUNDLE_KEY.LAYOUT));
         }
 
@@ -86,14 +91,12 @@ public class ThumbnailFragment extends Fragment implements ThumbnailFragmentAdap
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
-        LogHelp.print(TAG,"Fragment Destoyed");
     }
 
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        LogHelp.print(TAG,"Fragment attach called");
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
@@ -106,33 +109,33 @@ public class ThumbnailFragment extends Fragment implements ThumbnailFragmentAdap
     public void onDetach() {
         super.onDetach();
         mListener = null;
-        LogHelp.print(TAG,"Fragment Detatched");
     }
 
     @Override
-    public void onItemClick(View view, int position) {
+    public void onItemClick(int position) {
+        mListener.onThumbnailClick(position, fragmentType);
     }
 
 
 
 
     public interface OnFragmentInteractionListener {
-        void onThumbnailClick(Uri uri);
+        void onThumbnailClick(int position, Constants.TAB_TYPE fragmentType);
         void onError();
     }
-    public void update( List<String> thumbnails){
+    public void update( List<String> thumbnails, Constants.TAB_TYPE tabType){
         this.thumbnails = thumbnails;
+        this.fragmentType = tabType;
         mAdapter.setData(thumbnails);
-        LogHelp.print(TAG,"Fragment Update");
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        LogHelp.print(TAG, "Fragment savesate");
         if(thumbnails != null) {
             outState.putStringArrayList(Constants.BUNDLE_KEY.THUMBNAIL, (ArrayList) thumbnails);
             outState.putParcelable(Constants.BUNDLE_KEY.LAYOUT, mLayoutManager.onSaveInstanceState());
+            outState.putSerializable(Constants.BUNDLE_KEY.POSITION, fragmentType);
         }
     }
 

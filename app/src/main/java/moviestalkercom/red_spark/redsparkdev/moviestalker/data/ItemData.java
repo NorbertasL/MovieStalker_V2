@@ -10,19 +10,46 @@ import java.util.List;
  */
 
 public class ItemData implements Serializable{
-    public String page;
-    public String total_results;
-    public String total_pages;
+
+    public String getPage() {return page;}
+    public String getTotal_results() {return total_results;}
+    public String getTotal_pages() {return total_pages;}
+    public List<Result> getResults() {return results;}
+
+    private String page;
+    private String total_results;
+    private String total_pages;
 
     public List<Result> results = new ArrayList<>();
     public class Result implements Serializable{
+        public String getVote_count() {return vote_count;}
+        public String gerId() {return id;}
+        public String getVideo() {return video;}
+        public String getVote_average() {return vote_average;}
+        public String getTitle() {
+            //If the object is holding tv_series data the title is store in the name field;
+            if(title == null || title.isEmpty())
+                return name;
+            return title;
+        }
+        public String getPopularity() {return popularity;}
+        public String getPoster_path() {return poster_path;}
+        public String getOriginal_language() {return original_language;}
+        public String getOriginal_title() {return original_title;}
+        public List<String> getGenre_ids() {return genre_ids;}
+        public String getBackdrop_path() {return backdrop_path;}
+        public String getAdult() {return adult;}
+        public String getOverview() {return overview;}
+        public String getRelease_date() {return release_date;}
+
         String vote_count;
         String id;
         String video;
         String vote_average;
-        String title;
+        String title;//used in movies
+        String name;//used in tv_series
         String popularity;
-        private String poster_path;
+        String poster_path;
         String original_language;
         String original_title;
         List<String> genre_ids = new ArrayList<>();
@@ -31,9 +58,6 @@ public class ItemData implements Serializable{
         String overview;
         String release_date;
 
-        public String getPosterPath(){
-            return poster_path;
-        }
     }
 
 }

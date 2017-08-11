@@ -44,7 +44,7 @@ public class ThumbnailFragmentAdapter extends RecyclerView.Adapter<ThumbnailFrag
 
     }
     public interface OnClickListener{
-        void onItemClick(View view, int position);
+        void onItemClick(int position);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class ThumbnailFragmentAdapter extends RecyclerView.Adapter<ThumbnailFrag
         //LogHelp.print(TAG, "onBindViewHolder for pos:" + position);
         String imageUrl =
               Constants.POSTER_BASE_URL + Constants.POSTER_SIZE.W95.getUrlTag() + mThumbnails.get(position);
-        GlideApp.with(holder.itemView.getContext()).load(imageUrl).placeholder(R.drawable.test).into(holder.thumbnail);
+        GlideApp.with(holder.itemView.getContext()).load(imageUrl).placeholder(R.drawable.placeholder_thumbnail).into(holder.thumbnail);
     }
 
     @Override
@@ -84,13 +84,12 @@ public class ThumbnailFragmentAdapter extends RecyclerView.Adapter<ThumbnailFrag
 
         @Override
         public void onClick(View v) {
-            mOnClickListener.onItemClick(v, getLayoutPosition());
+            mOnClickListener.onItemClick(getLayoutPosition());
         }
     }
     public void setData(List<String> thumbnails){
         this.mThumbnails = thumbnails;
         notifyDataSetChanged();
-        LogHelp.print(TAG, "setData");
     }
 
 }
