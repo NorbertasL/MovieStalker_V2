@@ -43,10 +43,10 @@ public class Constants {
 
     }
 
-    public enum TAB_TYPE{MOVIES("movie", 0), SERIES("tv", 1), FAVORITES("fav", 2);
+    public enum DATA_TYPE {MOVIES("movie", 0), SERIES("tv", 1), FAVORITES("fav", 2);
         String tag;
         int position;
-        TAB_TYPE(String tag, int position){
+        DATA_TYPE(String tag, int position){
             this.tag = tag; this.position = position;
         }
         public String getTag(){

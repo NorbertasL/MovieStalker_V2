@@ -32,6 +32,7 @@ public class FavContract {
         public final static String COLUMN_ADULT_RATED = "adult_rated";
         public final static String COLUMN_OVERVIEW = "overview";
         public final static String COLUMN_RELEASE_DATE = "release_date";
+        public final static String COLUMN_TYPE= "type";
 
     }
 

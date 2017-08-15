@@ -27,7 +27,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static com.red_spark.redsparkdev.moviestalker.data.Constants.TAB_TYPE.MOVIES;
+import static com.red_spark.redsparkdev.moviestalker.data.Constants.DATA_TYPE.MOVIES;
 
 public class MainActivity extends AppCompatActivity implements ThumbnailFragment.OnFragmentInteractionListener{
 
@@ -63,14 +63,14 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
         if(savedInstanceState == null) {
 
             buildTab(MOVIES);
-            buildTab(Constants.TAB_TYPE.SERIES);
-            buildTab(Constants.TAB_TYPE.FAVORITES);
+            buildTab(Constants.DATA_TYPE.SERIES);
+            buildTab(Constants.DATA_TYPE.FAVORITES);
 
         }else{
             movieData = (ItemData) savedInstanceState
-                    .getSerializable(Constants.TAB_TYPE.MOVIES.getTag());
+                    .getSerializable(Constants.DATA_TYPE.MOVIES.getTag());
             tvSeriesData = (ItemData) savedInstanceState
-                    .getSerializable(Constants.TAB_TYPE.SERIES.getTag());
+                    .getSerializable(Constants.DATA_TYPE.SERIES.getTag());
 
         }
 
@@ -79,12 +79,12 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putSerializable(Constants.TAB_TYPE.MOVIES.getTag(), movieData);
-        outState.putSerializable(Constants.TAB_TYPE.SERIES.getTag(), tvSeriesData);
+        outState.putSerializable(Constants.DATA_TYPE.MOVIES.getTag(), movieData);
+        outState.putSerializable(Constants.DATA_TYPE.SERIES.getTag(), tvSeriesData);
     }
 
     @Override
-    public void onThumbnailClick(int position, Constants.TAB_TYPE fragmentType) {
+    public void onThumbnailClick(int position, Constants.DATA_TYPE fragmentType) {
         switch (fragmentType){
             case MOVIES:
                 openDetailsFragment(movieData.getResults().get(position));break;
@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
 
     }
 
-    private void buildTab(final Constants.TAB_TYPE tabType){
+    private void buildTab(final Constants.DATA_TYPE tabType){
         //Creating retrofit builder instance
         final Retrofit.Builder builder =  new Retrofit.Builder()
                 //adding a base url that will be quarried

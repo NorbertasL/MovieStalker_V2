@@ -35,7 +35,7 @@ public class ThumbnailFragment extends Fragment implements ThumbnailFragmentAdap
     RecyclerView mRecyclerView;
 
     private List<String> thumbnails;
-    private Constants.TAB_TYPE fragmentType;
+    private Constants.DATA_TYPE fragmentType;
     private GridLayoutManager mLayoutManager;
 
 
@@ -74,7 +74,7 @@ public class ThumbnailFragment extends Fragment implements ThumbnailFragmentAdap
 
         if(savedInstanceState != null){
             update(savedInstanceState.getStringArrayList(Constants.BUNDLE_KEY.THUMBNAIL)
-                    ,(Constants.TAB_TYPE) savedInstanceState.getSerializable(Constants.BUNDLE_KEY.POSITION) );
+                    ,(Constants.DATA_TYPE) savedInstanceState.getSerializable(Constants.BUNDLE_KEY.POSITION) );
             mLayoutManager.onRestoreInstanceState(savedInstanceState.getParcelable(Constants.BUNDLE_KEY.LAYOUT));
         }
 
@@ -118,10 +118,10 @@ public class ThumbnailFragment extends Fragment implements ThumbnailFragmentAdap
 
 
     public interface OnFragmentInteractionListener {
-        void onThumbnailClick(int position, Constants.TAB_TYPE fragmentType);
+        void onThumbnailClick(int position, Constants.DATA_TYPE fragmentType);
         void onError();
     }
-    public void update( List<String> thumbnails, Constants.TAB_TYPE tabType){
+    public void update( List<String> thumbnails, Constants.DATA_TYPE tabType){
         this.thumbnails = thumbnails;
         this.fragmentType = tabType;
         mAdapter.setData(thumbnails);

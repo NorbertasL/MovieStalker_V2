@@ -23,7 +23,7 @@ public class ItemData implements Serializable{
     public List<Result> results = new ArrayList<>();
     public class Result implements Serializable{
         public String getVote_count() {return vote_count;}
-        public String gerId() {return id;}
+        public String getID() {return id;}
         public String getVideo() {return video;}
         public String getVote_average() {return vote_average;}
         public String getTitle() {
@@ -41,6 +41,11 @@ public class ItemData implements Serializable{
         public String getAdult() {return adult;}
         public String getOverview() {return overview;}
         public String getRelease_date() {return release_date;}
+        public Constants.DATA_TYPE getDataType(){
+            if(title == null || title.isEmpty())
+                return Constants.DATA_TYPE.SERIES;
+            return Constants.DATA_TYPE.MOVIES;
+        }
 
         String vote_count;
         String id;

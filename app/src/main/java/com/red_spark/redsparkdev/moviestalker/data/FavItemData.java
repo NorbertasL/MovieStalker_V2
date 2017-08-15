@@ -8,12 +8,12 @@ import java.util.List;
  */
 
 public class FavItemData {
-    public String getVote_count() {return vote_count;}
-    public String getId() {return id;}
+    public int getVote_count() {return vote_count;}
+    public int getId() {return id;}
     public String getVideo() {return video;}
-    public String getVote_average() {return vote_average;}
+    public double getVote_average() {return vote_average;}
     public String getTitle() {return title;}
-    public String getPopularity() {return popularity;}
+    public double getPopularity() {return popularity;}
     public String getPoster_path() {return poster_path;}
     public String getOriginal_language() {return original_language;}
     public String getOriginal_title() {return original_title;}
@@ -22,16 +22,16 @@ public class FavItemData {
     public String getAdult() {return adult;}
     public String getOverview() {return overview;}
     public String getRelease_date() {return release_date;}
-    public String getDatabaseId() {return databaseId;}
+    public int getDatabaseId() {return databaseId;}
     public String getLocal_poster_path() {return local_poster_path;}
     public String getLocal_backdrop_path() {return local_backdrop_path;}
 
-    String vote_count;
-    String id;
+    int vote_count;
+    int id;
     String video;
-    String vote_average;
+    double vote_average;
     String title;
-    String popularity;
+    double popularity;
     String poster_path;
     String original_language;
     String original_title;
@@ -40,7 +40,7 @@ public class FavItemData {
     String adult;
     String overview;
     String release_date;
-    String databaseId;
+    int databaseId;
     String local_poster_path;
     String local_backdrop_path;
 
