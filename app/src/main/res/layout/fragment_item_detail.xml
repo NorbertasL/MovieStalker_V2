@@ -75,14 +75,14 @@
         android:paddingLeft="@dimen/small_padding"/>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/floatingActionButton"
+        android:id="@+id/buttonAddToFav"
         android:layout_width="@dimen/floaring_button_size"
         android:layout_height="@dimen/floaring_button_size"
         android:clickable="true"
         app:backgroundTint="@drawable/primary_corners"
         app:fabSize="mini"
         app:elevation="@dimen/floating_button_elevation"
-        app:srcCompat="@android:drawable/star_big_on"
+        app:srcCompat="@android:drawable/star_big_off"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iv_backDrop"
         app:layout_constraintBottom_toBottomOf="@+id/iv_backDrop"

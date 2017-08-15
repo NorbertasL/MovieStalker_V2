@@ -35,12 +35,20 @@ public class ItemData implements Serializable{
         public String getPopularity() {return popularity;}
         public String getPoster_path() {return poster_path;}
         public String getOriginal_language() {return original_language;}
-        public String getOriginal_title() {return original_title;}
+        public String getOriginal_title() {
+            if(original_title == null || original_title.isEmpty())
+                return original_name;
+            return original_title;
+        }
         public List<String> getGenre_ids() {return genre_ids;}
         public String getBackdrop_path() {return backdrop_path;}
         public String getAdult() {return adult;}
         public String getOverview() {return overview;}
-        public String getRelease_date() {return release_date;}
+        public String getRelease_date() {
+            if(release_date == null || release_date.isEmpty())
+                return first_air_date;
+            return release_date;
+        }
         public Constants.DATA_TYPE getDataType(){
             if(title == null || title.isEmpty())
                 return Constants.DATA_TYPE.SERIES;
@@ -57,11 +65,13 @@ public class ItemData implements Serializable{
         String poster_path;
         String original_language;
         String original_title;
+        String original_name;
         List<String> genre_ids = new ArrayList<>();
         String backdrop_path;
         String adult;
         String overview;
         String release_date;
+        String first_air_date;
 
     }
 

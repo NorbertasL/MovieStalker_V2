@@ -2,14 +2,17 @@ package com.red_spark.redsparkdev.moviestalker.data.database;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
-import com.red_spark.redsparkdev.moviestalker.data.FavItemData;
+import com.red_spark.redsparkdev.moviestalker.data.Constants;
 import com.red_spark.redsparkdev.moviestalker.data.ItemData;
-import com.red_spark.redsparkdev.moviestalker.data.database.FavContract.FavEntry;
-
-import java.util.ArrayList;
+import com.red_spark.redsparkdev.moviestalker.data.MovieData;
+import com.red_spark.redsparkdev.moviestalker.data.database.FavContract.FavMovieEntry;
+import com.red_spark.redsparkdev.moviestalker.data.database.FavContract.FavSeriesEntry;
+import com.red_spark.redsparkdev.moviestalker.data.database.FavContract.GenreEntry;
 import java.util.List;
 
 
@@ -27,59 +30,144 @@ public class DbHelper extends SQLiteOpenHelper{
     }
     @Override
     public void onCreate(SQLiteDatabase db) {
-       final String CREATE_SQL = "CREATE TABLE "+ FavEntry.TABLE_NAME+ " ("
-               + FavEntry.COLUMN_NETWORK_ID+" INTEGER NOT NULL UNIQUE, "
-               + FavEntry.COLUMN_TITLE+" TEXT NOT NULL, "
-               + FavEntry.COLUMN_ORIGINAL_TITLE+" TEXT, "
-               + FavEntry.COLUMN_VOTE_COUNT+" INTEGER, "
-               + FavEntry.COLUMN_VIDEO_LIST_PATH+" TEXT, "
-               + FavEntry.COLUMN_VOTE_AVERAGE+" REAL, "
-               + FavEntry.COLUMN_POPULARITY+" REAL, "
-               + FavEntry.COLUMN_POSTER_PATH+" TEXT, "
-               + FavEntry.COLUMN_POSTER_LOCAL_PATH+ " TEXT, "
-               + FavEntry.COLUMN_ORIGINAL_LANQUAGE+ " TEXT, "
-               + FavEntry.COLUMN_GENRE_IDS+" TEXT, "
-               + FavEntry.COLUMN_BACKDROP_PATH+" TEXT, "
-               + FavEntry.COLUMN_BACKDROP_LOCAL_PATH+" TEXT, "
-               + FavEntry.COLUMN_ADULT_RATED+" TEXT, "
-               + FavEntry.COLUMN_OVERVIEW+" TEXT, "
-               + FavEntry.COLUMN_RELEASE_DATE+" TEXT, "
-               + FavEntry.COLUMN_TYPE+" TEXT);";
+       final String CREATE_MOVIE_SQL = "CREATE TABLE "+ FavMovieEntry.TABLE_NAME+ " ("
+               + FavMovieEntry.COLUMN_NETWORK_ID+" INTEGER NOT NULL UNIQUE, "
+               + FavMovieEntry.COLUMN_TITLE+" TEXT NOT NULL, "
+               + FavMovieEntry.COLUMN_ORIGINAL_TITLE+" TEXT, "
+               + FavMovieEntry.COLUMN_VOTE_COUNT+" INTEGER, "
+               + FavMovieEntry.COLUMN_VIDEO_LIST_PATH+" TEXT, "
+               + FavMovieEntry.COLUMN_VOTE_AVERAGE+" REAL, "
+               + FavMovieEntry.COLUMN_POPULARITY+" REAL, "
+               + FavMovieEntry.COLUMN_POSTER_PATH+" TEXT, "
+               + FavMovieEntry.COLUMN_POSTER_LOCAL_PATH+ " TEXT, "
+               + FavMovieEntry.COLUMN_ORIGINAL_LANGUAGE + " TEXT, "
+               + FavMovieEntry.COLUMN_BACKDROP_PATH+" TEXT, "
+               + FavMovieEntry.COLUMN_BACKDROP_LOCAL_PATH+" TEXT, "
+               + FavMovieEntry.COLUMN_ADULT_RATED+" TEXT, "
+               + FavMovieEntry.COLUMN_OVERVIEW+" TEXT, "
+               + FavMovieEntry.COLUMN_RELEASE_DATE+" TEXT);";
+        db.execSQL(CREATE_MOVIE_SQL);
 
-        db.execSQL(CREATE_SQL);
+       final String CREATE_SERIES_SQL = "CREATE TABLE "+ FavSeriesEntry.TABLE_NAME+ " ("
+                + FavSeriesEntry.COLUMN_NETWORK_ID+" INTEGER NOT NULL UNIQUE, "
+                + FavSeriesEntry.COLUMN_NAME+" TEXT NOT NULL, "
+                + FavSeriesEntry.COLUMN_ORIGINAL_NAME+" TEXT, "
+                + FavSeriesEntry.COLUMN_VOTE_COUNT+" INTEGER, "
+                + FavSeriesEntry.COLUMN_VIDEO_LIST_PATH+" TEXT, "
+                + FavSeriesEntry.COLUMN_VOTE_AVERAGE+" REAL, "
+                + FavSeriesEntry.COLUMN_POPULARITY+" REAL, "
+                + FavSeriesEntry.COLUMN_POSTER_PATH+" TEXT, "
+                + FavSeriesEntry.COLUMN_POSTER_LOCAL_PATH+ " TEXT, "
+                + FavSeriesEntry.COLUMN_ORIGINAL_LANGUAGE + " TEXT, "
+                + FavSeriesEntry.COLUMN_BACKDROP_PATH+" TEXT, "
+                + FavSeriesEntry.COLUMN_BACKDROP_LOCAL_PATH+" TEXT, "
+                + FavSeriesEntry.COLUMN_ADULT_RATED+" TEXT, "
+                + FavSeriesEntry.COLUMN_OVERVIEW+" TEXT, "
+                + FavSeriesEntry.COLUMN_AIR_DATE+" TEXT);";
+        db.execSQL(CREATE_SERIES_SQL);
+
+
+        /*
+        final String CREATE_GENRE_SQL =  "CREATE TABLE "+ GenreEntry.TABLE_NAME+ " ("
+                + GenreEntry.GENRE_ID+" INTEGER NOT NULL , "
+                + GenreEntry.NAME+" TEXT, "
+                + GenreEntry.TYPE+" TEXT, "
+                + GenreEntry.ITEM_ID+" INTEGER, "
+                + GenreEntry.LOCAL_POSTER_PATH+" TEXT);";
+        db.execSQL(CREATE_GENRE_SQL);
+        */
 
 
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS "+FavEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS "+ FavMovieEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS "+ FavSeriesEntry.TABLE_NAME);
         onCreate(db);
     }
-    public boolean addData(ItemData.Result data){
+    public boolean addRow(Constants.DATA_TYPE type, ItemData.Result data){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(FavEntry.COLUMN_NETWORK_ID, Integer.parseInt(data.getID()));
-        contentValues.put(FavEntry.COLUMN_TITLE, data.getTitle());
-        contentValues.put(FavEntry.COLUMN_ORIGINAL_TITLE, data.getOriginal_title());
-        contentValues.put(FavEntry.COLUMN_VOTE_COUNT, Integer.parseInt(data.getVote_count()));
-        contentValues.put(FavEntry.COLUMN_VIDEO_LIST_PATH, data.getVideo());
-        contentValues.put(FavEntry.COLUMN_VOTE_AVERAGE, Double.parseDouble(data.getVote_average()));
-        contentValues.put(FavEntry.COLUMN_POPULARITY, Double.parseDouble(data.getPopularity()));
-        contentValues.put(FavEntry.COLUMN_POSTER_PATH, data.getPoster_path());
-        contentValues.put(FavEntry.COLUMN_ORIGINAL_LANQUAGE, data.getOriginal_language());
-        contentValues.put(FavEntry.COLUMN_BACKDROP_PATH, data.getBackdrop_path());
-        contentValues.put(FavEntry.COLUMN_ADULT_RATED, data.getAdult());
-        contentValues.put(FavEntry.COLUMN_OVERVIEW, data.getOverview());
-        contentValues.put(FavEntry.COLUMN_RELEASE_DATE, data.getRelease_date());
-        contentValues.put(FavEntry.COLUMN_TYPE, data.getDataType().toString());
-        contentValues.put(FavEntry.COLUMN_GENRE_IDS, arrayToLongString(data.getGenre_ids()));
+        long newRowId;
 
-        long newRowId = db.insert(FavEntry.TABLE_NAME, null, contentValues);
+        switch (type){
+            case MOVIES:
+                newRowId = addMovies(db, contentValues, data);
+                break;
+            case SERIES:
+                newRowId = addSeries(db, contentValues, data);
+                break;
+            default:
+                newRowId = -1;
+        }
+
+        // TODO: 15-Aug-17 add genre as a new table
         if(newRowId != -1){
             return true;
         }
         return false;
+    }
+    public boolean removeRow(Constants.DATA_TYPE type, int networkID){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String tableName = "";
+        String columnName = "";
+        switch (type) {
+            case MOVIES:
+                tableName = FavMovieEntry.TABLE_NAME;
+                columnName = FavMovieEntry.COLUMN_NETWORK_ID;
+                break;
+            case SERIES:
+                tableName = FavSeriesEntry.TABLE_NAME;
+                columnName = FavSeriesEntry.COLUMN_NETWORK_ID;
+                break;
+            default:
+                Log.e(DbHelper.class.getSimpleName(), "DID NOT SPECIFY DATA TYPE");
+                return false;
+        }
+            String selection = columnName + " LIKE ?";
+            String [] selectionArgs = {Integer.toString(networkID)};
+
+            if(db.delete(tableName, selection, selectionArgs) > 0)
+                return true;
+            else
+                return false;
+    }
+    public boolean checkIfInDatabase(Constants.DATA_TYPE type, int networkID){
+        SQLiteDatabase db = this.getReadableDatabase();
+        String tableName = "";
+        String columnName = "";
+
+
+        switch (type){
+            case MOVIES:
+                tableName = FavMovieEntry.TABLE_NAME;
+                columnName = FavMovieEntry.COLUMN_NETWORK_ID;
+                break;
+            case SERIES:
+                tableName = FavSeriesEntry.TABLE_NAME;
+                columnName = FavSeriesEntry.COLUMN_NETWORK_ID;
+                break;
+            default:
+                Log.e(DbHelper.class.getSimpleName(), "DID NOT SPECIFY DATA TYPE");
+                return false;
+        }
+        String [] projection = {
+                columnName
+        };
+        String selection = columnName + " = ?";
+        String [] selectionArgs = {Integer.toString(networkID)};
+
+        Cursor cursor = db.query(
+              tableName,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+        return cursor.moveToNext();
     }
     String arrayToLongString(List<String> array) {
         StringBuilder sb = new StringBuilder();
@@ -90,4 +178,42 @@ public class DbHelper extends SQLiteOpenHelper{
         return sb.toString();
 
     }
+
+    private long addMovies(SQLiteDatabase db, ContentValues contentValues, ItemData.Result data){
+
+        contentValues.put(FavMovieEntry.COLUMN_NETWORK_ID, Integer.parseInt(data.getID()));
+        contentValues.put(FavMovieEntry.COLUMN_TITLE, data.getTitle());
+        contentValues.put(FavMovieEntry.COLUMN_ORIGINAL_TITLE, data.getOriginal_title());
+        contentValues.put(FavMovieEntry.COLUMN_VOTE_COUNT, Integer.parseInt(data.getVote_count()));
+        contentValues.put(FavMovieEntry.COLUMN_VIDEO_LIST_PATH, data.getVideo());
+        contentValues.put(FavMovieEntry.COLUMN_VOTE_AVERAGE, Double.parseDouble(data.getVote_average()));
+        contentValues.put(FavMovieEntry.COLUMN_POPULARITY, Double.parseDouble(data.getPopularity()));
+        contentValues.put(FavMovieEntry.COLUMN_POSTER_PATH, data.getPoster_path());
+        contentValues.put(FavMovieEntry.COLUMN_ORIGINAL_LANGUAGE, data.getOriginal_language());
+        contentValues.put(FavMovieEntry.COLUMN_BACKDROP_PATH, data.getBackdrop_path());
+        contentValues.put(FavMovieEntry.COLUMN_ADULT_RATED, data.getAdult());
+        contentValues.put(FavMovieEntry.COLUMN_OVERVIEW, data.getOverview());
+        contentValues.put(FavMovieEntry.COLUMN_RELEASE_DATE, data.getRelease_date());
+
+        return db.insert(FavMovieEntry.TABLE_NAME, null, contentValues);
+    }
+
+    private long addSeries(SQLiteDatabase db, ContentValues contentValues, ItemData.Result data){
+        contentValues.put(FavSeriesEntry.COLUMN_NETWORK_ID, Integer.parseInt(data.getID()));
+        contentValues.put(FavSeriesEntry.COLUMN_NAME, data.getTitle());
+        contentValues.put(FavSeriesEntry.COLUMN_ORIGINAL_NAME, data.getOriginal_title());
+        contentValues.put(FavSeriesEntry.COLUMN_VOTE_COUNT, Integer.parseInt(data.getVote_count()));
+        contentValues.put(FavSeriesEntry.COLUMN_VIDEO_LIST_PATH, data.getVideo());
+        contentValues.put(FavSeriesEntry.COLUMN_VOTE_AVERAGE, Double.parseDouble(data.getVote_average()));
+        contentValues.put(FavSeriesEntry.COLUMN_POPULARITY, Double.parseDouble(data.getPopularity()));
+        contentValues.put(FavSeriesEntry.COLUMN_POSTER_PATH, data.getPoster_path());
+        contentValues.put(FavSeriesEntry.COLUMN_ORIGINAL_LANGUAGE, data.getOriginal_language());
+        contentValues.put(FavSeriesEntry.COLUMN_BACKDROP_PATH, data.getBackdrop_path());
+        contentValues.put(FavSeriesEntry.COLUMN_ADULT_RATED, data.getAdult());
+        contentValues.put(FavSeriesEntry.COLUMN_OVERVIEW, data.getOverview());
+        contentValues.put(FavSeriesEntry.COLUMN_AIR_DATE, data.getRelease_date());
+        
+        return db.insert(FavSeriesEntry.TABLE_NAME, null, contentValues);
+    }
+
 }
