@@ -108,13 +108,10 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
 
         }
 
-                LogHelp.print(TAG, fragmentType+"Clicked on : "+position);
-
     }
 
     @Override
     public void onFragmentCreated(FavThumbnailFragment fragment) {
-        LogHelp.print(TAG, "onFragmentCreated");
         getFavData();
         fragment.update(favMovieData);
     }
@@ -191,8 +188,7 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
 
 
                 }else{
-                    LogHelp.print(TAG, "response.body() == null");
-                    //mErrorView.setVisibility(View.VISIBLE);
+                    mErrorView.setVisibility(View.VISIBLE);
                 }
 
 
@@ -203,7 +199,6 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
             public void onFailure(Call<ItemData> call, Throwable t) {
                 mErrorView.setVisibility(View.VISIBLE);
                 mProgressBar.setVisibility(View.GONE);
-                LogHelp.print(TAG, "onFailure");
             }
 
             private ArrayList<String> extractThumbnails(ItemData data){

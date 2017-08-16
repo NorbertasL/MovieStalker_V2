@@ -17,9 +17,6 @@ public class MainFragmentPagerAdapter extends FragmentPagerAdapter{
         super(fm);
     }
 
-    private ThumbnailFragment frag1;
-    private ThumbnailFragment frag2;
-    private FavThumbnailFragment frag3;
 
 
 
@@ -27,14 +24,11 @@ public class MainFragmentPagerAdapter extends FragmentPagerAdapter{
     public Fragment getItem(int position) {
         switch(position){
             case 0:
-                frag1 = new ThumbnailFragment();
-               return frag1;
+               return new ThumbnailFragment();
             case 1:
-                frag2 =new ThumbnailFragment();
-                return frag2;
+                return new ThumbnailFragment();
             case 2:
-                frag3 = new FavThumbnailFragment();
-                return frag3;
+                return new FavThumbnailFragment();
             default:
                 return null;
         }
@@ -43,7 +37,6 @@ public class MainFragmentPagerAdapter extends FragmentPagerAdapter{
 
     @Override
     public int getCount() {
-        //LogHelp.print(TAG, "getCount");
         return 3;
 
     }
@@ -60,12 +53,5 @@ public class MainFragmentPagerAdapter extends FragmentPagerAdapter{
             default:
                 return null;
         }
-
-
-
-        // super.getPageTitle(position);
-    }
-    public Fragment getFragment(){
-        return frag3;
     }
 }

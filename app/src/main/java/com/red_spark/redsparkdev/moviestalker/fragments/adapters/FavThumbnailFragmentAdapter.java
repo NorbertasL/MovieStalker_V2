@@ -6,13 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-
 import com.red_spark.redsparkdev.moviestalker.R;
 import com.red_spark.redsparkdev.moviestalker.data.Constants;
 import com.red_spark.redsparkdev.moviestalker.data.ImageStorage;
 import com.red_spark.redsparkdev.moviestalker.data.MovieData;
 import com.red_spark.redsparkdev.moviestalker.network.GlideApp;
-
 import java.io.File;
 import java.util.Collections;
 import java.util.List;

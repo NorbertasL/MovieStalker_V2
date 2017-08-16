@@ -6,13 +6,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-
 import com.red_spark.redsparkdev.moviestalker.data.Constants;
 import com.red_spark.redsparkdev.moviestalker.data.ItemData;
-import com.red_spark.redsparkdev.moviestalker.data.MovieData;
 import com.red_spark.redsparkdev.moviestalker.data.database.FavContract.FavMovieEntry;
 import com.red_spark.redsparkdev.moviestalker.data.database.FavContract.FavSeriesEntry;
-import com.red_spark.redsparkdev.moviestalker.data.database.FavContract.GenreEntry;
 import java.util.List;
 
 
