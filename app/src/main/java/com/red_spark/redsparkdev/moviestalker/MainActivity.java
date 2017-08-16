@@ -11,15 +11,10 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import com.bumptech.glide.load.resource.bitmap.BitmapDrawableResource;
 import com.red_spark.redsparkdev.moviestalker.data.Constants;
 import com.red_spark.redsparkdev.moviestalker.data.ImageStorage;
 import com.red_spark.redsparkdev.moviestalker.data.ItemData;
@@ -146,15 +141,11 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
         //Calling the action on the interface(we only have one and it's a @GET request)
         //We also specify the variables of the url
 
+        Call<ItemData> networkCall = networkInterface.itemList(
+                tabType.getTag(),
+                "top_rated",
+                getString(R.string.api_key) );
 
-
-        String url = Constants.MOVIE_BASE_URL
-                + tabType.getTag()
-                + "/top_rated?api_key="
-                + getString(R.string.api_key);
-        Call<ItemData> networkCall = networkInterface
-                .movieList(url);
-        LogHelp.print(TAG, url);
 
         mProgressBar.setVisibility(View.VISIBLE);
         //executing the request asynchronously
