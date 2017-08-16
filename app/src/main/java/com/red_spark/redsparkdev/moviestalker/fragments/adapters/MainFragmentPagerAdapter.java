@@ -3,6 +3,8 @@ package com.red_spark.redsparkdev.moviestalker.fragments.adapters;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+
+import com.red_spark.redsparkdev.moviestalker.fragments.FavThumbnailFragment;
 import com.red_spark.redsparkdev.moviestalker.fragments.ThumbnailFragment;
 
 /**
@@ -15,18 +17,28 @@ public class MainFragmentPagerAdapter extends FragmentPagerAdapter{
         super(fm);
     }
 
+    private ThumbnailFragment frag1;
+    private ThumbnailFragment frag2;
+    private FavThumbnailFragment frag3;
+
+
+
     @Override
     public Fragment getItem(int position) {
         switch(position){
             case 0:
-               return new ThumbnailFragment();
+                frag1 = new ThumbnailFragment();
+               return frag1;
             case 1:
-                return new ThumbnailFragment();
+                frag2 =new ThumbnailFragment();
+                return frag2;
             case 2:
-                return new ThumbnailFragment();
+                frag3 = new FavThumbnailFragment();
+                return frag3;
             default:
                 return null;
         }
+
     }
 
     @Override
@@ -52,5 +64,8 @@ public class MainFragmentPagerAdapter extends FragmentPagerAdapter{
 
 
         // super.getPageTitle(position);
+    }
+    public Fragment getFragment(){
+        return frag3;
     }
 }

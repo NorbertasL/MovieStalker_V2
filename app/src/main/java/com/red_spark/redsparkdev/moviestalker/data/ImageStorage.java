@@ -7,6 +7,8 @@ import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.util.Log;
 
+import com.red_spark.redsparkdev.moviestalker.LogHelp;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -19,13 +21,15 @@ import java.io.IOException;
 public class ImageStorage {
     private static final String TAG = ImageStorage.class.getSimpleName();
     private static final String thumbnailFolder = ".thumbnail";
-    private static final String backdropFilder = ".backdrop";
+    private static final String backdropFolder = ".backdrop";
+    private static final String tempFolder = ".tempImages";
 
     private static final String STORAGE_DIR = Environment.getExternalStorageDirectory().toString();
 
     public enum ImageType {
         THUMBNAIL(thumbnailFolder),
-        BACKDROP(backdropFilder);
+        BACKDROP(backdropFolder),
+        TEMP(tempFolder);
         String folder;
         ImageType(String folder){
             this.folder = folder;
@@ -36,16 +40,18 @@ public class ImageStorage {
         }
     }
     private static String getDir(ImageType imageType){
+
         File storageDir = new File(STORAGE_DIR, imageType.toString());
         if(!storageDir.exists()){
             if(!storageDir.mkdir()){
+                LogHelp.print(TAG, storageDir.toString());
                 Log.d(TAG, ":Failed to Created image folder");
                 return null;
             }
         }
         return storageDir.toString();
     }
-    private static Bitmap convertToBitmap(Drawable image){
+    public static Bitmap convertToBitmap(Drawable image){
         Bitmap bitmap = null;
 
         if (image instanceof BitmapDrawable) {
@@ -92,13 +98,18 @@ public class ImageStorage {
             }
         }
     }
-    public static File getImageLocation(ImageType imageType, int id){
+    public static File getImage(ImageType imageType, String id){
         File file = new File(getDir(imageType), id+".png");
         if(file.exists()){
             return file;
         }
         Log.v(TAG, ":File not found");
         return null;
+    }
+    public static String getImagePath(ImageType imageType, String id){
+
+        LogHelp.print(TAG, getDir(imageType)+"/"+ id+".png");
+        return getDir(imageType)+"/"+ id+".png";
     }
     public static void deleteImage(ImageType imageType, String id) {
         File file = new File(getDir(imageType), id+".png");

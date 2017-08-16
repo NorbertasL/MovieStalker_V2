@@ -49,7 +49,7 @@ public class ThumbnailFragmentAdapter extends RecyclerView.Adapter<ThumbnailFrag
         View view = inflater.inflate(R.layout.movie_list_item, parent, false);
         MyViewHolder viewHolder = new MyViewHolder(view);
         return viewHolder;
-    }
+}
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {

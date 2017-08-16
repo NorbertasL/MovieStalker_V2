@@ -18,12 +18,16 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import com.bumptech.glide.load.resource.bitmap.BitmapDrawableResource;
 import com.red_spark.redsparkdev.moviestalker.data.Constants;
+import com.red_spark.redsparkdev.moviestalker.data.ImageStorage;
 import com.red_spark.redsparkdev.moviestalker.data.ItemData;
 import com.red_spark.redsparkdev.moviestalker.data.MovieData;
 import com.red_spark.redsparkdev.moviestalker.data.SeriesData;
 import com.red_spark.redsparkdev.moviestalker.data.database.DbHelper;
 import com.red_spark.redsparkdev.moviestalker.data.database.FavContract;
+import com.red_spark.redsparkdev.moviestalker.fragments.FavThumbnailFragment;
 import com.red_spark.redsparkdev.moviestalker.fragments.ItemDetailFragment;
 import com.red_spark.redsparkdev.moviestalker.fragments.ThumbnailFragment;
 import com.red_spark.redsparkdev.moviestalker.fragments.adapters.MainFragmentPagerAdapter;
@@ -33,10 +37,11 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import android.graphics.Bitmap;
 
 import static com.red_spark.redsparkdev.moviestalker.data.Constants.DATA_TYPE.MOVIES;
 
-public class MainActivity extends AppCompatActivity implements ThumbnailFragment.OnFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity implements ThumbnailFragment.OnFragmentInteractionListener, FavThumbnailFragment.OnFragmentInteractionListener{
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -58,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        favMovieData= new ArrayList<>();
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         mFragmentManger = getSupportFragmentManager();
@@ -73,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
 
             buildTab(MOVIES);
             buildTab(Constants.DATA_TYPE.SERIES);
-            buildFavTab();
+
 
         }else{
             movieData = (ItemData) savedInstanceState
@@ -107,20 +113,25 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
     }
 
     @Override
+    public void onFragmentCreated(FavThumbnailFragment fragment) {
+        LogHelp.print(TAG, "onFragmentCreated");
+        getFavData();
+        fragment.update(favMovieData);
+    }
+
+    @Override
     public void onError() {
        // mFragmentManager.beginTransaction().remove(topMoviesFragment).commit();
        // mErrorView.setVisibility(View.VISIBLE);
        // mProgressBar.setVisibility(View.GONE);
 
     }
-    private void buildFavTab(){
+
+    private void getFavData(){
         DbHelper dbHelper = new DbHelper(this);
-
-        convertData(dbHelper.getList());
-
-
+        Cursor[] cursors = dbHelper.getList();
+        convertData(cursors);
     }
-
     private void buildTab(final Constants.DATA_TYPE tabType){
         //Creating retrofit builder instance
         final Retrofit.Builder builder =  new Retrofit.Builder()
@@ -206,9 +217,10 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
 
     }
     private void openDetailsFragment(ItemData.Result itemDetails, Drawable image){
+
+        ImageStorage.saveImage(ImageStorage.ImageType.TEMP, image, Constants.BUNDLE_KEY.THUMBNAIL);
         Bundle bundle = new Bundle();
         bundle.putSerializable(Constants.BUNDLE_KEY.DATA, itemDetails);
-        bundle.putSerializable(Constants.BUNDLE_KEY.THUMBNAIL, (Serializable)image);
         itemDetailFragment = new ItemDetailFragment();
         itemDetailFragment.setArguments(bundle);
 
@@ -237,6 +249,7 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
             movieData.id = cursor[0].getInt(
                     cursor[0].getColumnIndexOrThrow(FavContract.FavMovieEntry.COLUMN_NETWORK_ID)
             );
+            favMovieData.add(movieData);
             // TODO: 16-Aug-17 finish loading in all the data
         }
 

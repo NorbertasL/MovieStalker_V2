@@ -4,7 +4,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.AppCompatImageView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +20,8 @@ import com.red_spark.redsparkdev.moviestalker.data.ImageStorage;
 import com.red_spark.redsparkdev.moviestalker.data.ItemData;
 import com.red_spark.redsparkdev.moviestalker.data.database.DbHelper;
 import com.red_spark.redsparkdev.moviestalker.network.GlideApp;
+
+import java.io.File;
 
 public class ItemDetailFragment extends Fragment {
 
@@ -95,8 +96,11 @@ public class ItemDetailFragment extends Fragment {
         if(dbHelper.addRow(data.getDataType(), data)){
             Toast.makeText(getContext(), "Item Added", Toast.LENGTH_SHORT).show();
             //saving thumbnail
-            Drawable thumbnailImage = (Drawable) getArguments()
-                    .getSerializable(Constants.BUNDLE_KEY.THUMBNAIL);
+            Drawable thumbnailImage = Drawable
+                    .createFromPath(ImageStorage.getImagePath(
+                            ImageStorage.ImageType.TEMP, Constants.BUNDLE_KEY.THUMBNAIL));
+
+
             //image name will be a combination of data type and the item id
             ImageStorage.saveImage(ImageStorage.ImageType.THUMBNAIL,
                     thumbnailImage, data.getDataType().getTag()+data.getID());
