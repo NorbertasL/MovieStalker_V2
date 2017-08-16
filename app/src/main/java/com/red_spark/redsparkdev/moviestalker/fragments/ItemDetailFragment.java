@@ -1,5 +1,6 @@
 package com.red_spark.redsparkdev.moviestalker.fragments;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -16,6 +17,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import com.red_spark.redsparkdev.moviestalker.R;
 import com.red_spark.redsparkdev.moviestalker.data.Constants;
+import com.red_spark.redsparkdev.moviestalker.data.ImageStorage;
 import com.red_spark.redsparkdev.moviestalker.data.ItemData;
 import com.red_spark.redsparkdev.moviestalker.data.database.DbHelper;
 import com.red_spark.redsparkdev.moviestalker.network.GlideApp;
@@ -92,6 +94,13 @@ public class ItemDetailFragment extends Fragment {
     private void addItemToDatabase(){
         if(dbHelper.addRow(data.getDataType(), data)){
             Toast.makeText(getContext(), "Item Added", Toast.LENGTH_SHORT).show();
+            //saving thumbnail
+            Drawable thumbnailImage = (Drawable) getArguments()
+                    .getSerializable(Constants.BUNDLE_KEY.THUMBNAIL);
+            //image name will be a combination of data type and the item id
+            ImageStorage.saveImage(ImageStorage.ImageType.THUMBNAIL,
+                    thumbnailImage, data.getDataType().getTag()+data.getID());
+
             mBtAddToFav.setImageResource(android.R.drawable.star_big_on);
         }else{
             Toast.makeText(getContext(), "Failed To Add Item", Toast.LENGTH_SHORT).show();
@@ -100,6 +109,10 @@ public class ItemDetailFragment extends Fragment {
     private void removeItemFromDatabase(){
         if(dbHelper.removeRow(data.getDataType(), id)){
             Toast.makeText(getContext(), "Item Removed", Toast.LENGTH_SHORT).show();
+
+            ImageStorage.deleteImage(ImageStorage.ImageType.THUMBNAIL,
+                    data.getDataType().getTag()+data.getID());
+
             mBtAddToFav.setImageResource(android.R.drawable.star_big_off);
         }else{
             Toast.makeText(getContext(), "Failed To Remove Item", Toast.LENGTH_SHORT).show();

@@ -41,7 +41,7 @@ public class ThumbnailFragmentAdapter extends RecyclerView.Adapter<ThumbnailFrag
 
     }
     public interface OnClickListener{
-        void onItemClick(int position);
+        void onItemClick(int position, ImageView imageView);
     }
 
     @Override
@@ -81,7 +81,7 @@ public class ThumbnailFragmentAdapter extends RecyclerView.Adapter<ThumbnailFrag
 
         @Override
         public void onClick(View v) {
-            mOnClickListener.onItemClick(getLayoutPosition());
+            mOnClickListener.onItemClick(getLayoutPosition(), thumbnail);
         }
     }
     public void setData(List<String> thumbnails){

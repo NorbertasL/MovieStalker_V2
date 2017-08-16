@@ -1,6 +1,7 @@
 package com.red_spark.redsparkdev.moviestalker.fragments;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -8,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +61,6 @@ public class ThumbnailFragment extends Fragment implements ThumbnailFragmentAdap
         //butterknife set up
         unbinder = ButterKnife.bind(this, rootView);
 
-        LogHelp.print(TAG, rootView.getWidth()+"");
 
         /**
         ImageView imageView = new ImageView(this.getContext());
@@ -110,15 +111,15 @@ public class ThumbnailFragment extends Fragment implements ThumbnailFragmentAdap
     }
 
     @Override
-    public void onItemClick(int position) {
-        mListener.onThumbnailClick(position, fragmentType);
+    public void onItemClick(int position, ImageView imageView) {
+        mListener.onThumbnailClick(position, fragmentType, imageView.getDrawable());
     }
 
 
 
 
     public interface OnFragmentInteractionListener {
-        void onThumbnailClick(int position, Constants.DATA_TYPE fragmentType);
+        void onThumbnailClick(int position, Constants.DATA_TYPE fragmentType, Drawable thumbnailImage);
         void onError();
     }
     public void update( List<String> thumbnails, Constants.DATA_TYPE tabType){

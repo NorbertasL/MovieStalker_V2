@@ -133,6 +133,30 @@ public class DbHelper extends SQLiteOpenHelper{
             else
                 return false;
     }
+    public Cursor[] getList(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor[] returnCursor = new Cursor[2];
+
+        returnCursor[0] = db.query(
+                FavMovieEntry.TABLE_NAME,
+                null,//we want all the columns
+                null,//we want all rows
+                null,
+                null,
+                null,
+                null);
+
+        returnCursor[1] = db.query(
+                FavSeriesEntry.TABLE_NAME,
+                null,//we want all the columns
+                null,//we want all rows
+                null,
+                null,
+                null,
+                null);
+
+        return returnCursor;
+    }
     public boolean checkIfInDatabase(Constants.DATA_TYPE type, int networkID){
         SQLiteDatabase db = this.getReadableDatabase();
         String tableName = "";

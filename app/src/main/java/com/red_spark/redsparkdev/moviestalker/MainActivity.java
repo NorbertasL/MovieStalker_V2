@@ -1,5 +1,7 @@
 package com.red_spark.redsparkdev.moviestalker;
 
+import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
@@ -10,6 +12,7 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +20,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.red_spark.redsparkdev.moviestalker.data.Constants;
 import com.red_spark.redsparkdev.moviestalker.data.ItemData;
+import com.red_spark.redsparkdev.moviestalker.data.MovieData;
+import com.red_spark.redsparkdev.moviestalker.data.SeriesData;
+import com.red_spark.redsparkdev.moviestalker.data.database.DbHelper;
+import com.red_spark.redsparkdev.moviestalker.data.database.FavContract;
 import com.red_spark.redsparkdev.moviestalker.fragments.ItemDetailFragment;
 import com.red_spark.redsparkdev.moviestalker.fragments.ThumbnailFragment;
 import com.red_spark.redsparkdev.moviestalker.fragments.adapters.MainFragmentPagerAdapter;
@@ -45,6 +52,8 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
 
     private ItemData movieData;
     private ItemData tvSeriesData;
+    private List<MovieData> favMovieData;
+    private SeriesData favSeriesData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
 
             buildTab(MOVIES);
             buildTab(Constants.DATA_TYPE.SERIES);
-            buildTab(Constants.DATA_TYPE.FAVORITES);
+            buildFavTab();
 
         }else{
             movieData = (ItemData) savedInstanceState
@@ -84,12 +93,12 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
     }
 
     @Override
-    public void onThumbnailClick(int position, Constants.DATA_TYPE fragmentType) {
+    public void onThumbnailClick(int position, Constants.DATA_TYPE fragmentType, Drawable thumbnailImage) {
         switch (fragmentType){
             case MOVIES:
-                openDetailsFragment(movieData.getResults().get(position));break;
+                openDetailsFragment(movieData.getResults().get(position), thumbnailImage);break;
             case SERIES:
-                openDetailsFragment(tvSeriesData.getResults().get(position));break;
+                openDetailsFragment(tvSeriesData.getResults().get(position), thumbnailImage);break;
 
         }
 
@@ -102,6 +111,13 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
        // mFragmentManager.beginTransaction().remove(topMoviesFragment).commit();
        // mErrorView.setVisibility(View.VISIBLE);
        // mProgressBar.setVisibility(View.GONE);
+
+    }
+    private void buildFavTab(){
+        DbHelper dbHelper = new DbHelper(this);
+
+        convertData(dbHelper.getList());
+
 
     }
 
@@ -189,9 +205,10 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
         });
 
     }
-    private void openDetailsFragment(ItemData.Result itemDetails){
+    private void openDetailsFragment(ItemData.Result itemDetails, Drawable image){
         Bundle bundle = new Bundle();
         bundle.putSerializable(Constants.BUNDLE_KEY.DATA, itemDetails);
+        bundle.putSerializable(Constants.BUNDLE_KEY.THUMBNAIL, (Serializable)image);
         itemDetailFragment = new ItemDetailFragment();
         itemDetailFragment.setArguments(bundle);
 
@@ -212,5 +229,16 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
         }else{
             super.onBackPressed();
         }
+    }
+
+    private void convertData(Cursor[] cursor){
+        while(cursor[0].moveToNext()){
+            MovieData movieData = new MovieData();
+            movieData.id = cursor[0].getInt(
+                    cursor[0].getColumnIndexOrThrow(FavContract.FavMovieEntry.COLUMN_NETWORK_ID)
+            );
+            // TODO: 16-Aug-17 finish loading in all the data
+        }
+
     }
 }
