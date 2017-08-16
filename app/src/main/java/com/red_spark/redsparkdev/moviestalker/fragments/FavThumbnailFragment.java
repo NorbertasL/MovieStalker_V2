@@ -85,8 +85,9 @@ public class FavThumbnailFragment extends Fragment implements FavThumbnailFragme
         mListener = null;
     }
     @Override
-    public void onItemClick(int position, ImageView imageView) {
-        // TODO: 16-Aug-17 wite this
+    public void onItemClick(MovieData movieData) {
+
+
 
     }
     public interface OnFragmentInteractionListener {

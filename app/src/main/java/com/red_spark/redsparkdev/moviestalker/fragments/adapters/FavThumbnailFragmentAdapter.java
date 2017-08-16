@@ -12,7 +12,6 @@ import com.red_spark.redsparkdev.moviestalker.data.ImageStorage;
 import com.red_spark.redsparkdev.moviestalker.data.MovieData;
 import com.red_spark.redsparkdev.moviestalker.network.GlideApp;
 import java.io.File;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -23,7 +22,7 @@ public class FavThumbnailFragmentAdapter extends RecyclerView.Adapter<FavThumbna
     private static final String TAG = FavThumbnailFragmentAdapter.class.getSimpleName();
 
     private LayoutInflater inflater;
-    private List<MovieData> mMovieData = Collections.emptyList();
+    private List<MovieData> mMovieData;
     private OnClickListener mOnClickListener;
 
 
@@ -41,7 +40,7 @@ public class FavThumbnailFragmentAdapter extends RecyclerView.Adapter<FavThumbna
     }
 
     public interface OnClickListener {
-        void onItemClick(int position, ImageView imageView);
+        void onItemClick(MovieData movieData);
     }
 
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -81,7 +80,7 @@ public class FavThumbnailFragmentAdapter extends RecyclerView.Adapter<FavThumbna
 
         @Override
         public void onClick(View v) {
-            mOnClickListener.onItemClick(getLayoutPosition(), thumbnail);
+            mOnClickListener.onItemClick(mMovieData.get(getAdapterPosition()));
         }
     }
 

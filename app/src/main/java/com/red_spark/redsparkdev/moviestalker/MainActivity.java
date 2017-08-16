@@ -239,6 +239,7 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
     }
 
     private void convertData(Cursor[] cursor){
+        favMovieData.clear();
         while(cursor[0].moveToNext()){
             MovieData movieData = new MovieData();
             movieData.id = cursor[0].getInt(
