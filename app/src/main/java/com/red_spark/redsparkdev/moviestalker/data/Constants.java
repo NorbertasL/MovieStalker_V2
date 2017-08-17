@@ -14,6 +14,15 @@ public class Constants {
         public static final String LAYOUT = "LAYOUT_KEY";
         public static final String POSITION = "POSITION_KEY";
         public static final String DATA = "DATA_KEY";
+        public static class NETWORK{
+            public static final String TYPE = "type";
+            public static final String LIST = "list";
+        }
+    }
+    public static class LOADER_IDS{
+        public static final int MAIN_ACTIVITY_MOVIES = 1;
+        public static final int MAIN_ACTIVITY_SERIES = 2;
+
     }
     public enum POSTER_SIZE{
         W95("w92"),
@@ -43,11 +52,14 @@ public class Constants {
 
     }
 
-    public enum DATA_TYPE {MOVIES("movie", 0), SERIES("tv", 1), FAVORITES("fav", 2);
+    public enum DATA_TYPE {MOVIES("movie", 0, LOADER_IDS.MAIN_ACTIVITY_MOVIES),
+        SERIES("tv", 1, LOADER_IDS.MAIN_ACTIVITY_SERIES),
+        FAVORITES("fav", 2, -1);
         String tag;
         int position;
-        DATA_TYPE(String tag, int position){
-            this.tag = tag; this.position = position;
+        int loaderID;
+        DATA_TYPE(String tag, int position, int loaderID){
+            this.tag = tag; this.position = position; this.loaderID = loaderID;
         }
         public String getTag(){
             return tag;
@@ -55,6 +67,7 @@ public class Constants {
         public int getPosition(){
             return position;
         }
+        public int getLoaderID(){return loaderID;}
 
 
 

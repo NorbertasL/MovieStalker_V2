@@ -4,6 +4,8 @@ import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -26,13 +28,7 @@ import com.red_spark.redsparkdev.moviestalker.fragments.FavThumbnailFragment;
 import com.red_spark.redsparkdev.moviestalker.fragments.ItemDetailFragment;
 import com.red_spark.redsparkdev.moviestalker.fragments.ThumbnailFragment;
 import com.red_spark.redsparkdev.moviestalker.fragments.adapters.MainFragmentPagerAdapter;
-import com.red_spark.redsparkdev.moviestalker.network.GetMovieDataInterface;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-import android.graphics.Bitmap;
+import com.red_spark.redsparkdev.moviestalker.network.FetchItemData;
 
 import static com.red_spark.redsparkdev.moviestalker.data.Constants.DATA_TYPE.MOVIES;
 
@@ -81,6 +77,10 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
                     .getSerializable(Constants.DATA_TYPE.MOVIES.getTag());
             tvSeriesData = (ItemData) savedInstanceState
                     .getSerializable(Constants.DATA_TYPE.SERIES.getTag());
+            if(movieData == null)
+                buildTab(MOVIES);
+            if(tvSeriesData == null)
+                buildTab(Constants.DATA_TYPE.SERIES);
 
         }
 
@@ -106,6 +106,12 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
     }
 
     @Override
+    public void requestMoreData(ThumbnailFragment fragment, Constants.DATA_TYPE dataType) {
+        // TODO: 16-Aug-17 put in data request
+
+    }
+
+    @Override
     public void onFragmentCreated(FavThumbnailFragment fragment) {
         getFavData();
         fragment.update(favMovieData);
@@ -125,81 +131,22 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
         convertData(cursors);
     }
     private void buildTab(final Constants.DATA_TYPE tabType){
-        //Creating retrofit builder instance
-        final Retrofit.Builder builder =  new Retrofit.Builder()
-                //adding a base url that will be quarried
-                .baseUrl(Constants.MOVIE_BASE_URL)
-                //specifying what converter we will use
-                //since we are getting data in json format well use GSON
-                .addConverterFactory(GsonConverterFactory.create());
-
-        //Creating the actual retrofit object
-        Retrofit retrofit = builder.build();
-        //Instance of the retrofit interface
-        GetMovieDataInterface networkInterface = retrofit.create(GetMovieDataInterface.class);
-
-        //Calling the action on the interface(we only have one and it's a @GET request)
-        //We also specify the variables of the url
-
-        Call<ItemData> networkCall = networkInterface.itemList(
-                tabType.getTag(),
-                "top_rated",
-                getString(R.string.api_key) );
+        Bundle queryBundle = new Bundle();
+        queryBundle.putString(Constants.BUNDLE_KEY.NETWORK.LIST, "top_rated");
+        queryBundle.putSerializable(Constants.BUNDLE_KEY.NETWORK.TYPE, tabType);
+        LoaderManager loaderManager = getSupportLoaderManager();
+        Loader<ItemData> itemLoader = loaderManager.getLoader(tabType.getLoaderID());
+        if(itemLoader == null){
+            loaderManager.initLoader(tabType.getLoaderID(),
+                    queryBundle,
+                    new FetchItemData(this));
+        }else{
+            loaderManager.restartLoader(tabType.getLoaderID(),
+                    queryBundle,
+                    new FetchItemData(this));
+        }
 
 
-        mProgressBar.setVisibility(View.VISIBLE);
-        //executing the request asynchronously
-        networkCall.enqueue(new Callback<ItemData>() {
-
-            @Override
-            public void onResponse(Call<ItemData> call, Response<ItemData> response) {
-
-                switch (tabType){
-                    case MOVIES:
-                        movieData = response.body(); break;
-                    case SERIES:
-                        tvSeriesData = response.body(); break;
-                }
-
-                //Removing the progress bar since we have loaded the data
-                mProgressBar.setVisibility(View.GONE);
-
-                //get(0) since there should only be one list item in the response
-                if(response.body() != null){
-                    mErrorView.setVisibility(View.GONE);
-
-                    ArrayList<String> thumbnails = extractThumbnails(response.body());
-                    FragmentManager mFragmentManager = getSupportFragmentManager();
-                    List<Fragment> fragments = mFragmentManager.getFragments();
-                    ThumbnailFragment movieFragment = (ThumbnailFragment)fragments.get(tabType.getPosition());
-                    movieFragment.update(thumbnails, tabType);
-
-
-
-
-
-                }else{
-                    mErrorView.setVisibility(View.VISIBLE);
-                }
-
-
-
-            }
-
-            @Override
-            public void onFailure(Call<ItemData> call, Throwable t) {
-                mErrorView.setVisibility(View.VISIBLE);
-                mProgressBar.setVisibility(View.GONE);
-            }
-
-            private ArrayList<String> extractThumbnails(ItemData data){
-                ArrayList<String> thumbnails = new ArrayList<>();
-                for(ItemData.Result result: data.results){
-                    thumbnails.add(result.getPoster_path());
-                }
-                return thumbnails;
-            }
-        });
 
     }
     private void openDetailsFragment(ItemData.Result itemDetails, Drawable image){
@@ -240,5 +187,22 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
             // TODO: 16-Aug-17 finish loading in all the data
         }
 
+    }
+    public void setData(ItemData data){
+        ArrayList<String> thumbnails = extractThumbnails(data);
+        FragmentManager mFragmentManager = getSupportFragmentManager();
+        List<Fragment> fragments = mFragmentManager.getFragments();
+        ThumbnailFragment movieFragment = (ThumbnailFragment)fragments.get(data.getDataType().getPosition());
+        movieFragment.update(thumbnails, data.getDataType());
+
+    }
+
+
+    private ArrayList<String> extractThumbnails(ItemData data){
+        ArrayList<String> thumbnails = new ArrayList<>();
+        for(ItemData.Result result: data.results){
+            thumbnails.add(result.getPoster_path());
+        }
+        return thumbnails;
     }
 }

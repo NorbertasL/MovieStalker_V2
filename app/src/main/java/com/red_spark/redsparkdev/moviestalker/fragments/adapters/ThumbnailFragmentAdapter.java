@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import java.util.Collections;
 import java.util.List;
 
+import com.red_spark.redsparkdev.moviestalker.LogHelp;
 import com.red_spark.redsparkdev.moviestalker.R;
 import com.red_spark.redsparkdev.moviestalker.data.Constants;
 import com.red_spark.redsparkdev.moviestalker.network.GlideApp;
@@ -20,6 +21,8 @@ import com.red_spark.redsparkdev.moviestalker.network.GlideApp;
  */
 
 public class ThumbnailFragmentAdapter extends RecyclerView.Adapter<ThumbnailFragmentAdapter.MyViewHolder>{
+
+    private int offsetToStartLoadingData = 5;
 
     private static final String TAG = ThumbnailFragmentAdapter.class.getSimpleName();
 
@@ -42,6 +45,7 @@ public class ThumbnailFragmentAdapter extends RecyclerView.Adapter<ThumbnailFrag
     }
     public interface OnClickListener{
         void onItemClick(int position, ImageView imageView);
+        void requestMoreData();
     }
 
     @Override
@@ -57,6 +61,9 @@ public class ThumbnailFragmentAdapter extends RecyclerView.Adapter<ThumbnailFrag
         String imageUrl =
               Constants.IMAGE_BASE_URL + Constants.POSTER_SIZE.W95.getUrlTag() + mThumbnails.get(position);
         GlideApp.with(holder.itemView.getContext()).load(imageUrl).placeholder(R.drawable.placeholder_thumbnail).into(holder.thumbnail);
+        LogHelp.print(TAG, "At pos@"+holder.getAdapterPosition());
+        if(holder.getAdapterPosition() == getItemCount()-offsetToStartLoadingData)
+            mOnClickListener.requestMoreData();
     }
 
     @Override

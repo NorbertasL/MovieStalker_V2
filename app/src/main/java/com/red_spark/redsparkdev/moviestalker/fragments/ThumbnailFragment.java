@@ -113,13 +113,18 @@ public class ThumbnailFragment extends Fragment implements ThumbnailFragmentAdap
     @Override
     public void onItemClick(int position, ImageView imageView) {
         mListener.onThumbnailClick(position, fragmentType, imageView.getDrawable());
+        mListener.requestMoreData(this, fragmentType);
     }
 
+    @Override
+    public void requestMoreData() {
 
+    }
 
 
     public interface OnFragmentInteractionListener {
         void onThumbnailClick(int position, Constants.DATA_TYPE fragmentType, Drawable thumbnailImage);
+        void requestMoreData(ThumbnailFragment fragment, Constants.DATA_TYPE dataType);
         void onError();
     }
     public void update( List<String> thumbnails, Constants.DATA_TYPE tabType){

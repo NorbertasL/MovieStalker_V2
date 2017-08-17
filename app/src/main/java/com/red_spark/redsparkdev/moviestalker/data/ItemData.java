@@ -20,6 +20,10 @@ public class ItemData implements Serializable{
     private String total_results;
     private String total_pages;
 
+    public Constants.DATA_TYPE getDataType() {return dataType;}
+    public void setDataType(Constants.DATA_TYPE dataType) {this.dataType = dataType;}
+    private Constants.DATA_TYPE dataType;
+
     public List<Result> results = new ArrayList<>();
     public class Result implements Serializable{
         public String getVote_count() {return vote_count;}
