@@ -4,15 +4,11 @@ import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
-
-import com.red_spark.redsparkdev.moviestalker.LogHelp;
 import com.red_spark.redsparkdev.moviestalker.MainActivity;
 import com.red_spark.redsparkdev.moviestalker.R;
 import com.red_spark.redsparkdev.moviestalker.data.Constants;
 import com.red_spark.redsparkdev.moviestalker.data.ItemData;
-
 import java.io.IOException;
-
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -33,6 +29,7 @@ public class FetchItemData implements LoaderManager.LoaderCallbacks<ItemData>{
     public Loader<ItemData> onCreateLoader(int id, final Bundle args) {
         return new AsyncTaskLoader<ItemData>(mainActivity){
             private String list;
+            private Integer page = null;
 
             @Override
             protected void onStartLoading() {
@@ -41,6 +38,9 @@ public class FetchItemData implements LoaderManager.LoaderCallbacks<ItemData>{
                 }
                 dataType = (Constants.DATA_TYPE)args.getSerializable(Constants.BUNDLE_KEY.NETWORK.TYPE);
                 list = args.getString(Constants.BUNDLE_KEY.NETWORK.LIST);
+                if(args.containsKey(Constants.BUNDLE_KEY.NETWORK.PAGE_NUM))
+                    page = args.getInt(Constants.BUNDLE_KEY.NETWORK.PAGE_NUM);
+
 
 
                 // TODO: 17-Aug-17 make a loading indicator
@@ -64,13 +64,13 @@ public class FetchItemData implements LoaderManager.LoaderCallbacks<ItemData>{
                 Call<ItemData> networkCall = networkInterface.itemList(
                         dataType.getTag(),
                         list,
-                        mainActivity.getString(R.string.api_key)
+                        mainActivity.getString(R.string.api_key),
+                        page
                 );
                 try{
                    return networkCall.execute().body();
                 }catch (IOException e){
                     // TODO: 17-Aug-17 error here
-                    LogHelp.print("networks", "request failed");
                     return null;
                 }
 
@@ -82,6 +82,7 @@ public class FetchItemData implements LoaderManager.LoaderCallbacks<ItemData>{
     public void onLoadFinished(Loader<ItemData> loader, ItemData data) {
         data.setDataType(dataType);
         mainActivity.setData(data);
+
 
     }
 

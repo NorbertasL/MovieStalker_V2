@@ -10,13 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-
 import java.util.ArrayList;
 import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import com.red_spark.redsparkdev.moviestalker.LogHelp;
 import com.red_spark.redsparkdev.moviestalker.R;
 import com.red_spark.redsparkdev.moviestalker.data.Constants;
 import com.red_spark.redsparkdev.moviestalker.fragments.adapters.ThumbnailFragmentAdapter;
@@ -30,6 +28,7 @@ import com.red_spark.redsparkdev.moviestalker.fragments.adapters.ThumbnailFragme
 public class ThumbnailFragment extends Fragment implements ThumbnailFragmentAdapter.OnClickListener{
 
     private final String TAG = ThumbnailFragment.class.getSimpleName();
+    private int offsetToStartLoadingData = 5;
 
     //Used by butterknife to set views to null
     private Unbinder unbinder;
@@ -40,8 +39,6 @@ public class ThumbnailFragment extends Fragment implements ThumbnailFragmentAdap
     private Constants.DATA_TYPE fragmentType;
     private GridLayoutManager mLayoutManager;
 
-
-    private int spanCount = 2;//setting the span count for the grid view
 
     private ThumbnailFragmentAdapter mAdapter;
 
@@ -60,6 +57,7 @@ public class ThumbnailFragment extends Fragment implements ThumbnailFragmentAdap
         View rootView = inflater.inflate(R.layout.fragment_top_movies, container, false);
         //butterknife set up
         unbinder = ButterKnife.bind(this, rootView);
+        thumbnails = new ArrayList<>();
 
 
         /**
@@ -68,10 +66,27 @@ public class ThumbnailFragment extends Fragment implements ThumbnailFragmentAdap
         imageView.setMaxWidth();
          **/
 
+        int spanCount = 2;
         mLayoutManager = new GridLayoutManager(getActivity(), spanCount);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new ThumbnailFragmentAdapter(getContext(), thumbnails, this);
         mRecyclerView.setAdapter(mAdapter);
+
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if(mLayoutManager.
+                        findLastCompletelyVisibleItemPosition()>= mAdapter.getItemCount()-offsetToStartLoadingData) {
+                    mListener.requestMoreData((ThumbnailFragment) getParentFragment(), fragmentType);
+                }
+
+            }
+        });
+
+
+        // TODO: 17-Aug-17 figure out a way to know when the scrill is near its end
+        //mListener.requestMoreData(this, fragmentType);
 
         if(savedInstanceState != null){
             update(savedInstanceState.getStringArrayList(Constants.BUNDLE_KEY.THUMBNAIL)
@@ -115,22 +130,16 @@ public class ThumbnailFragment extends Fragment implements ThumbnailFragmentAdap
         mListener.onThumbnailClick(position, fragmentType, imageView.getDrawable());
         mListener.requestMoreData(this, fragmentType);
     }
-
-    @Override
-    public void requestMoreData() {
-
-    }
-
-
+    
     public interface OnFragmentInteractionListener {
         void onThumbnailClick(int position, Constants.DATA_TYPE fragmentType, Drawable thumbnailImage);
         void requestMoreData(ThumbnailFragment fragment, Constants.DATA_TYPE dataType);
         void onError();
     }
     public void update( List<String> thumbnails, Constants.DATA_TYPE tabType){
-        this.thumbnails = thumbnails;
+        this.thumbnails.addAll(thumbnails);
         this.fragmentType = tabType;
-        mAdapter.setData(thumbnails);
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override

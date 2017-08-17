@@ -17,6 +17,7 @@ public class Constants {
         public static class NETWORK{
             public static final String TYPE = "type";
             public static final String LIST = "list";
+            public static final String PAGE_NUM = "pager_number";
         }
     }
     public static class LOADER_IDS{

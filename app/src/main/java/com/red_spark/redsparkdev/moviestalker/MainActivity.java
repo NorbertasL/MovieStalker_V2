@@ -2,6 +2,7 @@ package com.red_spark.redsparkdev.moviestalker;
 
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
@@ -31,6 +32,7 @@ import com.red_spark.redsparkdev.moviestalker.fragments.adapters.MainFragmentPag
 import com.red_spark.redsparkdev.moviestalker.network.FetchItemData;
 
 import static com.red_spark.redsparkdev.moviestalker.data.Constants.DATA_TYPE.MOVIES;
+import static com.red_spark.redsparkdev.moviestalker.data.Constants.DATA_TYPE.SERIES;
 
 public class MainActivity extends AppCompatActivity implements ThumbnailFragment.OnFragmentInteractionListener, FavThumbnailFragment.OnFragmentInteractionListener{
 
@@ -46,14 +48,16 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
     FragmentManager mFragmentManger;
     ItemDetailFragment itemDetailFragment;
 
-    private ItemData movieData;
-    private ItemData tvSeriesData;
+    private List<ItemData> movieData;
+    private List<ItemData> tvSeriesData;
     private List<MovieData> favMovieData;
     private SeriesData favSeriesData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        movieData = new ArrayList<>();
+        tvSeriesData = new ArrayList<>();
         favMovieData= new ArrayList<>();
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
@@ -65,22 +69,21 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
 
 
 
+
+
         //checking for save instance state
         if(savedInstanceState == null) {
-
-            buildTab(MOVIES);
-            buildTab(Constants.DATA_TYPE.SERIES);
+            buildTab(MOVIES, 0);
+            buildTab(Constants.DATA_TYPE.SERIES, 0);
 
 
         }else{
-            movieData = (ItemData) savedInstanceState
-                    .getSerializable(Constants.DATA_TYPE.MOVIES.getTag());
-            tvSeriesData = (ItemData) savedInstanceState
-                    .getSerializable(Constants.DATA_TYPE.SERIES.getTag());
+            movieData = savedInstanceState.getParcelableArrayList(MOVIES.getTag());
+            tvSeriesData = savedInstanceState.getParcelableArrayList(SERIES.getTag());
             if(movieData == null)
-                buildTab(MOVIES);
+                buildTab(MOVIES, 0);
             if(tvSeriesData == null)
-                buildTab(Constants.DATA_TYPE.SERIES);
+                buildTab(Constants.DATA_TYPE.SERIES, 0);
 
         }
 
@@ -89,17 +92,17 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putSerializable(Constants.DATA_TYPE.MOVIES.getTag(), movieData);
-        outState.putSerializable(Constants.DATA_TYPE.SERIES.getTag(), tvSeriesData);
+        outState.putParcelableArrayList(Constants.DATA_TYPE.MOVIES.getTag(), (ArrayList<? extends Parcelable>) movieData);
+        outState.putParcelableArrayList(Constants.DATA_TYPE.SERIES.getTag(), (ArrayList<? extends Parcelable>)tvSeriesData);
     }
 
     @Override
     public void onThumbnailClick(int position, Constants.DATA_TYPE fragmentType, Drawable thumbnailImage) {
         switch (fragmentType){
             case MOVIES:
-                openDetailsFragment(movieData.getResults().get(position), thumbnailImage);break;
+                openDetailsFragment(calculatePos(position, fragmentType), thumbnailImage);break;
             case SERIES:
-                openDetailsFragment(tvSeriesData.getResults().get(position), thumbnailImage);break;
+                openDetailsFragment(calculatePos(position, fragmentType), thumbnailImage);break;
 
         }
 
@@ -107,7 +110,16 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
 
     @Override
     public void requestMoreData(ThumbnailFragment fragment, Constants.DATA_TYPE dataType) {
-        // TODO: 16-Aug-17 put in data request
+        switch (dataType){
+            case MOVIES:
+                buildTab(dataType, movieData.size()+1);
+                break;
+            case SERIES:
+                buildTab(dataType, tvSeriesData.size()+1);
+                break;
+
+        }
+
 
     }
 
@@ -130,10 +142,13 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
         Cursor[] cursors = dbHelper.getList();
         convertData(cursors);
     }
-    private void buildTab(final Constants.DATA_TYPE tabType){
+    private void buildTab(final Constants.DATA_TYPE tabType, int pageNum){
         Bundle queryBundle = new Bundle();
         queryBundle.putString(Constants.BUNDLE_KEY.NETWORK.LIST, "top_rated");
         queryBundle.putSerializable(Constants.BUNDLE_KEY.NETWORK.TYPE, tabType);
+        if(pageNum>0)
+            queryBundle.putInt(Constants.BUNDLE_KEY.NETWORK.PAGE_NUM, pageNum);
+
         LoaderManager loaderManager = getSupportLoaderManager();
         Loader<ItemData> itemLoader = loaderManager.getLoader(tabType.getLoaderID());
         if(itemLoader == null){
@@ -189,6 +204,14 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
 
     }
     public void setData(ItemData data){
+        switch (data.getDataType()){
+            case MOVIES:
+                movieData.add(data);
+                break;
+            case SERIES:
+                tvSeriesData.add(data);
+                break;
+        }
         ArrayList<String> thumbnails = extractThumbnails(data);
         FragmentManager mFragmentManager = getSupportFragmentManager();
         List<Fragment> fragments = mFragmentManager.getFragments();
@@ -204,5 +227,34 @@ public class MainActivity extends AppCompatActivity implements ThumbnailFragment
             thumbnails.add(result.getPoster_path());
         }
         return thumbnails;
+    }
+    private ItemData.Result calculatePos(int pos, Constants.DATA_TYPE dataType){
+        int count = 0;
+        int page = 0;
+        List<ItemData> loopObject;
+        switch (dataType){
+            case MOVIES:
+                loopObject = movieData;
+                break;
+            case SERIES:
+                loopObject = tvSeriesData;
+                break;
+            default:
+                return null;
+
+        }
+        ItemData.Result returnRes = null;
+        for(ItemData data: loopObject){
+            if(pos < data.getResults().size()) {
+                return data.getResults().get(pos);
+
+            }else if(pos < (count+=data.getResults().size())){
+                return  data.getResults().get(pos-(count-data.getResults().size()));
+
+            }
+
+
+        }
+        return null;
     }
 }

@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import com.red_spark.redsparkdev.moviestalker.R;
 import com.red_spark.redsparkdev.moviestalker.data.Constants;
 import com.red_spark.redsparkdev.moviestalker.data.MovieData;
@@ -21,6 +20,7 @@ import butterknife.Unbinder;
 
 /**
  * Created by Red_Spark on 16-Aug-17.
+ *
  */
 
 public class FavThumbnailFragment extends Fragment implements FavThumbnailFragmentAdapter.OnClickListener {
@@ -32,9 +32,6 @@ public class FavThumbnailFragment extends Fragment implements FavThumbnailFragme
     RecyclerView mRecyclerView;
 
     private List<MovieData> mMovieData;
-    private GridLayoutManager mLayoutManager;
-
-    private int spanCount = 2;//setting the span count for the grid view
 
     private FavThumbnailFragmentAdapter mAdapter;
 
@@ -50,11 +47,15 @@ public class FavThumbnailFragment extends Fragment implements FavThumbnailFragme
         //butterknife set up
         unbinder = ButterKnife.bind(this, rootView);
 
+        int spanCount = 2;
+        GridLayoutManager mLayoutManager;
         mLayoutManager = new GridLayoutManager(getActivity(), spanCount);
+
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new FavThumbnailFragmentAdapter(getContext(), mMovieData, this);
         mRecyclerView.setAdapter(mAdapter);
         mListener.onFragmentCreated(this);
+
 
 
         // TODO: 16-Aug-17 write restore state code

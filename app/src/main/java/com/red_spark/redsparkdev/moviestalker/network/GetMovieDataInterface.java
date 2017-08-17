@@ -16,5 +16,7 @@ public interface GetMovieDataInterface {
     Call<ItemData> itemList(
             @Path("type")String type,
             @Path("list")String list,
-            @Query("api_key") String key);
+            @Query("api_key") String key,
+            @Query("page")Integer page);
+
 }

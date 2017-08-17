@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -20,8 +19,6 @@ import com.red_spark.redsparkdev.moviestalker.data.ImageStorage;
 import com.red_spark.redsparkdev.moviestalker.data.ItemData;
 import com.red_spark.redsparkdev.moviestalker.data.database.DbHelper;
 import com.red_spark.redsparkdev.moviestalker.network.GlideApp;
-
-import java.io.File;
 
 public class ItemDetailFragment extends Fragment {
 
